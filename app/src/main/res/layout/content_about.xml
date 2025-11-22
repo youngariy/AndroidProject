@@ -53,7 +53,7 @@
                         android:layout_gravity="center"
                         android:background="?attr/selectableItemBackgroundBorderless"
                         android:src="@mipmap/ic_share_black_36dp"
-                        app:tint="@color/colorAboutSectionIcons" />
+                        app:tint="?android:attr/textColorSecondary" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -85,7 +85,7 @@
                         android:layout_gravity="center"
                         android:background="?attr/selectableItemBackgroundBorderless"
                         android:src="@mipmap/ic_star_black_36dp"
-                        app:tint="@color/colorAboutSectionIcons" />
+                        app:tint="?android:attr/textColorSecondary" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -117,7 +117,7 @@
                         android:layout_gravity="center"
                         android:background="?attr/selectableItemBackgroundBorderless"
                         android:src="@mipmap/ic_feedback_black_36dp"
-                        app:tint="@color/colorAboutSectionIcons" />
+                        app:tint="?android:attr/textColorSecondary" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -155,7 +155,7 @@
                     android:layout_height="36dp"
                     android:layout_marginRight="16dp"
                     android:src="@drawable/github_mark_64px"
-                    app:tint="@color/colorAboutSectionIcons" />
+                    app:tint="?android:attr/textColorSecondary" />
 
                 <TextView
                     android:layout_width="match_parent"

@@ -64,7 +64,7 @@
             android:clickable="true"
             android:text="@string/read_more"
             android:textAlignment="center"
-            android:textColor="@color/colorPrimary"
+            android:textColor="?attr/colorPrimary"
             android:visibility="gone" />
 
         <LinearLayout

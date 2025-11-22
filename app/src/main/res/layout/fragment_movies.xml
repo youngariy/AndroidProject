@@ -12,17 +12,17 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:paddingBottom="20dp">
 
             <FrameLayout
                 android:id="@+id/layout_now_showing"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:paddingBottom="8dp"
-                android:paddingLeft="16dp"
-                android:paddingRight="16dp"
-                android:paddingTop="8dp"
+                android:layout_marginLeft="12dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginRight="12dp"
+                android:background="@drawable/bg_section_header"
                 android:visibility="gone">
 
                 <TextView
@@ -30,8 +30,9 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="left"
                     android:text="@string/now_showing"
-                    android:textColor="@android:color/black"
-                    android:textSize="20sp" />
+                    android:textColor="@color/colorOnSurface"
+                    android:textSize="21sp"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/text_view_view_all_now_showing"
@@ -41,7 +42,8 @@
                     android:clickable="true"
                     android:text="@string/view_all"
                     android:textColor="@color/colorPrimary"
-                    android:textSize="14sp" />
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
 
             </FrameLayout>
 
@@ -56,11 +58,10 @@
                 android:id="@+id/layout_popular"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:paddingBottom="8dp"
-                android:paddingLeft="16dp"
-                android:paddingRight="16dp"
-                android:paddingTop="8dp"
+                android:layout_marginLeft="12dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginRight="12dp"
+                android:background="@drawable/bg_section_header"
                 android:visibility="gone">
 
                 <TextView
@@ -68,8 +69,9 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="left"
                     android:text="@string/popular"
-                    android:textColor="@android:color/black"
-                    android:textSize="20sp" />
+                    android:textColor="@color/colorOnSurface"
+                    android:textSize="21sp"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/text_view_view_all_popular"
@@ -79,7 +81,8 @@
                     android:clickable="true"
                     android:text="@string/view_all"
                     android:textColor="@color/colorPrimary"
-                    android:textSize="14sp" />
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
 
             </FrameLayout>
 
@@ -94,11 +97,10 @@
                 android:id="@+id/layout_upcoming"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:paddingBottom="8dp"
-                android:paddingLeft="16dp"
-                android:paddingRight="16dp"
-                android:paddingTop="8dp"
+                android:layout_marginLeft="12dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginRight="12dp"
+                android:background="@drawable/bg_section_header"
                 android:visibility="gone">
 
                 <TextView
@@ -106,8 +108,9 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="left"
                     android:text="@string/upcoming"
-                    android:textColor="@android:color/black"
-                    android:textSize="20sp" />
+                    android:textColor="@color/colorOnSurface"
+                    android:textSize="21sp"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/text_view_view_all_upcoming"
@@ -117,7 +120,8 @@
                     android:clickable="true"
                     android:text="@string/view_all"
                     android:textColor="@color/colorPrimary"
-                    android:textSize="14sp" />
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
 
             </FrameLayout>
 
@@ -132,11 +136,10 @@
                 android:id="@+id/layout_top_rated"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:paddingBottom="8dp"
-                android:paddingLeft="16dp"
-                android:paddingRight="16dp"
-                android:paddingTop="8dp"
+                android:layout_marginLeft="12dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginRight="12dp"
+                android:background="@drawable/bg_section_header"
                 android:visibility="gone">
 
                 <TextView
@@ -144,8 +147,9 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="left"
                     android:text="@string/top_rated"
-                    android:textColor="@android:color/black"
-                    android:textSize="20sp" />
+                    android:textColor="@color/colorOnSurface"
+                    android:textSize="21sp"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/text_view_view_all_top_rated"
@@ -155,7 +159,8 @@
                     android:clickable="true"
                     android:text="@string/view_all"
                     android:textColor="@color/colorPrimary"
-                    android:textSize="14sp" />
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
 
             </FrameLayout>
 
