@@ -47,12 +47,12 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             case R.id.nav_tv_shows:
                 setTitle(R.string.tv_shows);
-                applyDefaultChrome();
+                applyMoviesChrome();
                 setFragment(new TVShowsFragment());
                 return true;
             case R.id.nav_favorites:
                 setTitle(R.string.favorites);
-                applyDefaultChrome();
+                applyMoviesChrome();
                 setFragment(new FavouritesFragment());
                 return true;
         }
