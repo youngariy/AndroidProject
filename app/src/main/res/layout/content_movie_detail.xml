@@ -61,13 +61,15 @@
             android:maxLines="7"
             android:textColor="@color/colorMovieDetailTextPrimary" />
 
-        <TextView
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/text_view_read_more_movie_detail"
-            android:layout_width="match_parent"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
             android:clickable="true"
             android:text="@string/read_more"
-            android:textAlignment="center"
+            android:textAllCaps="false"
             android:textColor="?attr/colorPrimary"
             android:visibility="gone" />
 

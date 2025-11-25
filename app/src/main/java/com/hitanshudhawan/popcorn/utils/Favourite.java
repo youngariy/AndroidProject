@@ -20,7 +20,7 @@ public class Favourite {
 
     //MOVIES
 
-    public static void addMovieToFav(Context context, Integer movieId, String posterPath, String name) {
+    public static void addMovieToFav(Context context, Integer movieId, String posterPath, String name, Double voteAverage) {
         if (movieId == null) return;
         DatabaseHelper databaseHelper = new DatabaseHelper(context);
         SQLiteDatabase database = databaseHelper.getWritableDatabase();
@@ -30,6 +30,9 @@ public class Favourite {
             contentValues.put(DatabaseHelper.MOVIE_ID, movieId);
             contentValues.put(DatabaseHelper.POSTER_PATH, posterPath);
             contentValues.put(DatabaseHelper.NAME, name);
+            if (voteAverage != null) {
+                contentValues.put(DatabaseHelper.VOTE_AVERAGE, voteAverage);
+            }
             database.insert(DatabaseHelper.FAV_MOVIES_TABLE_NAME, null, contentValues);
         }
         database.close();
@@ -86,7 +89,12 @@ public class Favourite {
             if (nameColumnIndex != -1) {
                 name = cursor.getString(nameColumnIndex);
             }
-            favMovies.add(new MovieBrief(null, movieId, null, null, name, null, posterPath, null, null, null, null, null, null, null));
+            int voteAverageColumnIndex = cursor.getColumnIndex(DatabaseHelper.VOTE_AVERAGE);
+            Double voteAverage = null;
+            if (voteAverageColumnIndex != -1 && !cursor.isNull(voteAverageColumnIndex)) {
+                voteAverage = cursor.getDouble(voteAverageColumnIndex);
+            }
+            favMovies.add(new MovieBrief(null, movieId, null, voteAverage, name, null, posterPath, null, null, null, null, null, null, null));
         }
         cursor.close();
         database.close();
@@ -95,7 +103,7 @@ public class Favourite {
 
     //TV SHOWS
 
-    public static void addTVShowToFav(Context context, Integer tvShowId, String posterPath, String name) {
+    public static void addTVShowToFav(Context context, Integer tvShowId, String posterPath, String name, Double voteAverage) {
         if (tvShowId == null) return;
         DatabaseHelper databaseHelper = new DatabaseHelper(context);
         SQLiteDatabase database = databaseHelper.getWritableDatabase();
@@ -105,6 +113,9 @@ public class Favourite {
             contentValues.put(DatabaseHelper.TV_SHOW_ID, tvShowId);
             contentValues.put(DatabaseHelper.POSTER_PATH, posterPath);
             contentValues.put(DatabaseHelper.NAME, name);
+            if (voteAverage != null) {
+                contentValues.put(DatabaseHelper.VOTE_AVERAGE, voteAverage);
+            }
             database.insert(DatabaseHelper.FAV_TV_SHOWS_TABLE_NAME, null, contentValues);
         }
         database.close();
@@ -161,7 +172,12 @@ public class Favourite {
             if (nameColumnIndex != -1) {
                 name = cursor.getString(nameColumnIndex);
             }
-            favTVShows.add(new TVShowBrief(null, tvShowId, name, null, null, posterPath, null, null, null, null, null, null, null));
+            int voteAverageColumnIndex = cursor.getColumnIndex(DatabaseHelper.VOTE_AVERAGE);
+            Double voteAverage = null;
+            if (voteAverageColumnIndex != -1 && !cursor.isNull(voteAverageColumnIndex)) {
+                voteAverage = cursor.getDouble(voteAverageColumnIndex);
+            }
+            favTVShows.add(new TVShowBrief(null, tvShowId, name, null, voteAverage, posterPath, null, null, null, null, null, null, null));
         }
         cursor.close();
         database.close();

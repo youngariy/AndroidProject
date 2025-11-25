@@ -34,10 +34,12 @@ public class MovieBriefsLargeAdapter extends RecyclerView.Adapter<MovieBriefsLar
 
     private Context mContext;
     private List<MovieBrief> mMovies;
+    private boolean mFullWidthCards;
 
-    public MovieBriefsLargeAdapter(Context context, List<MovieBrief> movies) {
+    public MovieBriefsLargeAdapter(Context context, List<MovieBrief> movies, boolean fullWidthCards) {
         mContext = context;
         mMovies = movies;
+        mFullWidthCards = fullWidthCards;
     }
 
     @Override
@@ -117,8 +119,16 @@ public class MovieBriefsLargeAdapter extends RecyclerView.Adapter<MovieBriefsLar
             movieGenreTextView = (TextView) itemView.findViewById(R.id.text_view_genre_show_card);
             movieFavImageButton = (ImageButton) itemView.findViewById(R.id.image_button_fav_show_card);
 
-            imageLayout.getLayoutParams().width = (int) (mContext.getResources().getDisplayMetrics().widthPixels * 0.9);
-            imageLayout.getLayoutParams().height = (int) ((mContext.getResources().getDisplayMetrics().widthPixels * 0.9) / 1.77);
+            int screenWidth = mContext.getResources().getDisplayMetrics().widthPixels;
+            // Leave breathing room so overlay text (rating/star) doesn't clip at edges.
+            float widthFactor = mFullWidthCards ? 0.9f : 0.82f;
+            RecyclerView.LayoutParams cardParams = (RecyclerView.LayoutParams) movieCard.getLayoutParams();
+            if (cardParams != null) {
+                cardParams.width = (int) (screenWidth * widthFactor);
+                movieCard.setLayoutParams(cardParams);
+            }
+            imageLayout.getLayoutParams().width = (int) (screenWidth * widthFactor);
+            imageLayout.getLayoutParams().height = (int) ((screenWidth * widthFactor) / 1.77);
             movieCard.setCardBackgroundColor(ContextCompat.getColor(mContext, R.color.colorMovieDetailSurface));
             movieGenreTextView.setTextColor(ContextCompat.getColor(mContext, R.color.colorMovieDetailTextSecondary));
             movieFavImageButton.setColorFilter(ContextCompat.getColor(mContext, R.color.colorAccent));
@@ -141,7 +151,7 @@ public class MovieBriefsLargeAdapter extends RecyclerView.Adapter<MovieBriefsLar
                         Favourite.removeMovieFromFav(mContext, movie.getId());
                         movieFavImageButton.setImageResource(R.mipmap.ic_favorite_border_black_18dp);
                     } else {
-                        Favourite.addMovieToFav(mContext, movie.getId(), movie.getPosterPath(), movie.getTitle());
+                        Favourite.addMovieToFav(mContext, movie.getId(), movie.getPosterPath(), movie.getTitle(), movie.getVoteAverage());
                         movieFavImageButton.setImageResource(R.mipmap.ic_favorite_black_18dp);
                     }
                 }

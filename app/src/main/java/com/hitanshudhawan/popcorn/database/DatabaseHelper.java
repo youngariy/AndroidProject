@@ -19,9 +19,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String TV_SHOW_ID = "tv_show_id";
     public static final String POSTER_PATH = "poster_path";
     public static final String NAME = "name";
+    public static final String VOTE_AVERAGE = "vote_average";
 
     public DatabaseHelper(Context context) {
-        super(context, DATABASE_NAME, null, 1);
+        super(context, DATABASE_NAME, null, 2);
     }
 
     @Override
@@ -30,18 +31,23 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 + ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + MOVIE_ID + " INTEGER, "
                 + POSTER_PATH + " TEXT, "
-                + NAME + " TEXT )";
+                + NAME + " TEXT, "
+                + VOTE_AVERAGE + " REAL )";
         String queryCreateTVShowTable = "CREATE TABLE " + FAV_TV_SHOWS_TABLE_NAME + " ( "
                 + ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + TV_SHOW_ID + " INTEGER, "
                 + POSTER_PATH + " TEXT, "
-                + NAME + " TEXT )";
+                + NAME + " TEXT, "
+                + VOTE_AVERAGE + " REAL )";
         sqLiteDatabase.execSQL(queryCreateMovieTable);
         sqLiteDatabase.execSQL(queryCreateTVShowTable);
     }
 
     @Override
-    public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
-
+    public void onUpgrade(SQLiteDatabase sqLiteDatabase, int oldVersion, int newVersion) {
+        if (oldVersion < 2) {
+            sqLiteDatabase.execSQL("ALTER TABLE " + FAV_MOVIES_TABLE_NAME + " ADD COLUMN " + VOTE_AVERAGE + " REAL");
+            sqLiteDatabase.execSQL("ALTER TABLE " + FAV_TV_SHOWS_TABLE_NAME + " ADD COLUMN " + VOTE_AVERAGE + " REAL");
+        }
     }
 }

@@ -2,8 +2,6 @@ package com.hitanshudhawan.popcorn.adapters;
 
 import android.content.Context;
 import android.content.Intent;
-import androidx.cardview.widget.CardView;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.HapticFeedbackConstants;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +10,9 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.cardview.widget.CardView;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.hitanshudhawan.popcorn.R;
@@ -54,6 +55,13 @@ public class TVShowBriefsSmallAdapter extends RecyclerView.Adapter<TVShowBriefsS
         else
             holder.tvShowTitleTextView.setText("");
 
+        if (mTVShows.get(position).getVoteAverage() != null && mTVShows.get(position).getVoteAverage() > 0) {
+            holder.tvShowRatingTextView.setVisibility(View.VISIBLE);
+            holder.tvShowRatingTextView.setText(String.format("%.1f", mTVShows.get(position).getVoteAverage()) + Constants.RATING_SYMBOL);
+        } else {
+            holder.tvShowRatingTextView.setVisibility(View.GONE);
+        }
+
         if (Favourite.isTVShowFav(mContext, mTVShows.get(position).getId())) {
             holder.tvShowFavImageButton.setImageResource(R.mipmap.ic_favorite_black_18dp);
         } else {
@@ -71,6 +79,7 @@ public class TVShowBriefsSmallAdapter extends RecyclerView.Adapter<TVShowBriefsS
         public CardView tvShowCard;
         public ImageView tvShowPosterImageView;
         public TextView tvShowTitleTextView;
+        public TextView tvShowRatingTextView;
         public ImageButton tvShowFavImageButton;
 
 
@@ -79,11 +88,20 @@ public class TVShowBriefsSmallAdapter extends RecyclerView.Adapter<TVShowBriefsS
             tvShowCard = (CardView) itemView.findViewById(R.id.card_view_show_card);
             tvShowPosterImageView = (ImageView) itemView.findViewById(R.id.image_view_show_card);
             tvShowTitleTextView = (TextView) itemView.findViewById(R.id.text_view_title_show_card);
+            tvShowRatingTextView = (TextView) itemView.findViewById(R.id.text_view_rating_show_card);
             tvShowFavImageButton = (ImageButton) itemView.findViewById(R.id.image_button_fav_show_card);
 
-            // Target two cards per row in favorites; width accounts for margins.
-            tvShowPosterImageView.getLayoutParams().width = (int) (mContext.getResources().getDisplayMetrics().widthPixels * 0.45);
-            tvShowPosterImageView.getLayoutParams().height = (int) ((mContext.getResources().getDisplayMetrics().widthPixels * 0.45) / 0.66);
+            // Target max two cards visible per viewport in horizontal lists.
+            int screenWidth = mContext.getResources().getDisplayMetrics().widthPixels;
+            int cardWidth = (int) (screenWidth * 0.46);
+            RecyclerView.LayoutParams cardParams = (RecyclerView.LayoutParams) tvShowCard.getLayoutParams();
+            if (cardParams != null) {
+                cardParams.width = cardWidth;
+                tvShowCard.setLayoutParams(cardParams);
+            }
+            tvShowPosterImageView.getLayoutParams().width = cardWidth;
+            tvShowPosterImageView.getLayoutParams().height = (int) (cardWidth / 0.66f);
+            tvShowRatingTextView.setTextColor(ContextCompat.getColor(mContext, R.color.colorAccent));
 
             tvShowCard.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -102,7 +120,7 @@ public class TVShowBriefsSmallAdapter extends RecyclerView.Adapter<TVShowBriefsS
                         Favourite.removeTVShowFromFav(mContext, mTVShows.get(getAdapterPosition()).getId());
                         tvShowFavImageButton.setImageResource(R.mipmap.ic_favorite_border_black_18dp);
                     } else {
-                        Favourite.addTVShowToFav(mContext, mTVShows.get(getAdapterPosition()).getId(), mTVShows.get(getAdapterPosition()).getPosterPath(), mTVShows.get(getAdapterPosition()).getName());
+                        Favourite.addTVShowToFav(mContext, mTVShows.get(getAdapterPosition()).getId(), mTVShows.get(getAdapterPosition()).getPosterPath(), mTVShows.get(getAdapterPosition()).getName(), mTVShows.get(getAdapterPosition()).getVoteAverage());
                         tvShowFavImageButton.setImageResource(R.mipmap.ic_favorite_black_18dp);
                     }
                 }

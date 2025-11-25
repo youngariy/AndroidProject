@@ -121,9 +121,9 @@ public class TVShowsFragment extends Fragment {
         mPopularTVShows = new ArrayList<>();
         mTopRatedTVShows = new ArrayList<>();
 
-        mAiringTodayAdapter = new TVShowBriefsLargeAdapter(getContext(), mAiringTodayTVShows);
+        mAiringTodayAdapter = new TVShowBriefsLargeAdapter(getContext(), mAiringTodayTVShows, true);
         mOnTheAirAdapter = new TVShowBriefsSmallAdapter(getContext(), mOnTheAirTVShows);
-        mPopularAdapter = new TVShowBriefsLargeAdapter(getContext(), mPopularTVShows);
+        mPopularAdapter = new TVShowBriefsLargeAdapter(getContext(), mPopularTVShows, false);
         mTopRatedAdapter = new TVShowBriefsSmallAdapter(getContext(), mTopRatedTVShows);
 
         mAiringTodayRecyclerView.setAdapter(mAiringTodayAdapter);

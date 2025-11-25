@@ -56,6 +56,13 @@ public class MovieBriefsSmallAdapter extends RecyclerView.Adapter<MovieBriefsSma
         else
             holder.movieTitleTextView.setText("");
 
+        if (mMovies.get(position).getVoteAverage() != null && mMovies.get(position).getVoteAverage() > 0) {
+            holder.movieRatingTextView.setVisibility(View.VISIBLE);
+            holder.movieRatingTextView.setText(String.format("%.1f", mMovies.get(position).getVoteAverage()) + Constants.RATING_SYMBOL);
+        } else {
+            holder.movieRatingTextView.setVisibility(View.GONE);
+        }
+
         if (Favourite.isMovieFav(mContext, mMovies.get(position).getId())) {
             holder.movieFavImageButton.setImageResource(R.mipmap.ic_favorite_black_18dp);
         } else {
@@ -73,6 +80,7 @@ public class MovieBriefsSmallAdapter extends RecyclerView.Adapter<MovieBriefsSma
         public CardView movieCard;
         public ImageView moviePosterImageView;
         public TextView movieTitleTextView;
+        public TextView movieRatingTextView;
         public ImageButton movieFavImageButton;
 
 
@@ -81,15 +89,24 @@ public class MovieBriefsSmallAdapter extends RecyclerView.Adapter<MovieBriefsSma
             movieCard = (CardView) itemView.findViewById(R.id.card_view_show_card);
             moviePosterImageView = (ImageView) itemView.findViewById(R.id.image_view_show_card);
             movieTitleTextView = (TextView) itemView.findViewById(R.id.text_view_title_show_card);
+            movieRatingTextView = (TextView) itemView.findViewById(R.id.text_view_rating_show_card);
             movieFavImageButton = (ImageButton) itemView.findViewById(R.id.image_button_fav_show_card);
 
-            // Target two cards per row in favorites; width accounts for margins.
-            moviePosterImageView.getLayoutParams().width = (int) (mContext.getResources().getDisplayMetrics().widthPixels * 0.45);
-            moviePosterImageView.getLayoutParams().height = (int) ((mContext.getResources().getDisplayMetrics().widthPixels * 0.45) / 0.66);
+            // Target max two cards visible per viewport in horizontal lists.
+            int screenWidth = mContext.getResources().getDisplayMetrics().widthPixels;
+            int cardWidth = (int) (screenWidth * 0.46);
+            RecyclerView.LayoutParams cardParams = (RecyclerView.LayoutParams) movieCard.getLayoutParams();
+            if (cardParams != null) {
+                cardParams.width = cardWidth;
+                movieCard.setLayoutParams(cardParams);
+            }
+            moviePosterImageView.getLayoutParams().width = cardWidth;
+            moviePosterImageView.getLayoutParams().height = (int) (cardWidth / 0.66f);
             movieCard.setCardBackgroundColor(ContextCompat.getColor(mContext, R.color.colorMovieDetailSurface));
             movieTitleTextView.setTextColor(ContextCompat.getColor(mContext, R.color.colorMovieDetailTextPrimary));
             moviePosterImageView.setBackgroundColor(ContextCompat.getColor(mContext, R.color.colorMovieDetailDivider));
             movieFavImageButton.setColorFilter(ContextCompat.getColor(mContext, R.color.colorAccent));
+            movieRatingTextView.setTextColor(ContextCompat.getColor(mContext, R.color.colorAccent));
 
             movieCard.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -109,7 +126,7 @@ public class MovieBriefsSmallAdapter extends RecyclerView.Adapter<MovieBriefsSma
                         Favourite.removeMovieFromFav(mContext, movie.getId());
                         movieFavImageButton.setImageResource(R.mipmap.ic_favorite_border_black_18dp);
                     } else {
-                        Favourite.addMovieToFav(mContext, movie.getId(), movie.getPosterPath(), movie.getTitle());
+                        Favourite.addMovieToFav(mContext, movie.getId(), movie.getPosterPath(), movie.getTitle(), movie.getVoteAverage());
                         movieFavImageButton.setImageResource(R.mipmap.ic_favorite_black_18dp);
                     }
                 }

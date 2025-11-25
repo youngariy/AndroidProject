@@ -96,7 +96,7 @@ public class MoviesFragment extends Fragment {
 
     private void initAdapters() {
         mNowShowingMovies = new ArrayList<>();
-        mNowShowingAdapter = new MovieBriefsLargeAdapter(getContext(), mNowShowingMovies);
+        mNowShowingAdapter = new MovieBriefsLargeAdapter(getContext(), mNowShowingMovies, true);
         mNowShowingRecyclerView.setAdapter(mNowShowingAdapter);
         mNowShowingRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
 
@@ -106,7 +106,7 @@ public class MoviesFragment extends Fragment {
         mPopularRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
 
         mUpcomingMovies = new ArrayList<>();
-        mUpcomingAdapter = new MovieBriefsLargeAdapter(getContext(), mUpcomingMovies);
+        mUpcomingAdapter = new MovieBriefsLargeAdapter(getContext(), mUpcomingMovies, false);
         mUpcomingRecyclerView.setAdapter(mUpcomingAdapter);
         mUpcomingRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
 

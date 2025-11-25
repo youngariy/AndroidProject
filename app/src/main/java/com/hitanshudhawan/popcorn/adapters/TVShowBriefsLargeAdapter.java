@@ -32,10 +32,12 @@ public class TVShowBriefsLargeAdapter extends RecyclerView.Adapter<TVShowBriefsL
 
     private Context mContext;
     private List<TVShowBrief> mTVShows;
+    private boolean mFullWidthCards;
 
-    public TVShowBriefsLargeAdapter(Context context, List<TVShowBrief> tvShows) {
+    public TVShowBriefsLargeAdapter(Context context, List<TVShowBrief> tvShows, boolean fullWidthCards) {
         mContext = context;
         mTVShows = tvShows;
+        mFullWidthCards = fullWidthCards;
     }
 
     @Override
@@ -111,8 +113,16 @@ public class TVShowBriefsLargeAdapter extends RecyclerView.Adapter<TVShowBriefsL
             tvShowGenreTextView = (TextView) itemView.findViewById(R.id.text_view_genre_show_card);
             tvShowFavImageButton = (ImageButton) itemView.findViewById(R.id.image_button_fav_show_card);
 
-            imageLayout.getLayoutParams().width = (int) (mContext.getResources().getDisplayMetrics().widthPixels * 0.9);
-            imageLayout.getLayoutParams().height = (int) ((mContext.getResources().getDisplayMetrics().widthPixels * 0.9) / 1.77);
+            int screenWidth = mContext.getResources().getDisplayMetrics().widthPixels;
+            // Leave breathing room so overlay text (rating/star) doesn't clip at edges.
+            float widthFactor = mFullWidthCards ? 0.9f : 0.82f;
+            RecyclerView.LayoutParams cardParams = (RecyclerView.LayoutParams) tvShowCard.getLayoutParams();
+            if (cardParams != null) {
+                cardParams.width = (int) (screenWidth * widthFactor);
+                tvShowCard.setLayoutParams(cardParams);
+            }
+            imageLayout.getLayoutParams().width = (int) (screenWidth * widthFactor);
+            imageLayout.getLayoutParams().height = (int) ((screenWidth * widthFactor) / 1.77);
 
             tvShowCard.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -131,7 +141,7 @@ public class TVShowBriefsLargeAdapter extends RecyclerView.Adapter<TVShowBriefsL
                         Favourite.removeTVShowFromFav(mContext, mTVShows.get(getAdapterPosition()).getId());
                         tvShowFavImageButton.setImageResource(R.mipmap.ic_favorite_border_black_18dp);
                     } else {
-                        Favourite.addTVShowToFav(mContext, mTVShows.get(getAdapterPosition()).getId(), mTVShows.get(getAdapterPosition()).getPosterPath(), mTVShows.get(getAdapterPosition()).getName());
+                        Favourite.addTVShowToFav(mContext, mTVShows.get(getAdapterPosition()).getId(), mTVShows.get(getAdapterPosition()).getPosterPath(), mTVShows.get(getAdapterPosition()).getName(), mTVShows.get(getAdapterPosition()).getVoteAverage());
                         tvShowFavImageButton.setImageResource(R.mipmap.ic_favorite_black_18dp);
                     }
                 }
