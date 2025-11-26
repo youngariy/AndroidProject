@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:background="@color/colorMovieDetailBackground"
     android:fitsSystemWindows="true"
-    tools:context="com.hitanshudhawan.popcorn.activities.MovieDetailActivity">
+    tools:context="com.youngariy.mopick.activities.MovieDetailActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/app_bar"
@@ -44,7 +44,14 @@
                     <ImageView
                         android:id="@+id/image_view_backdrop"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:adjustViewBounds="true"
+                        android:scaleType="centerCrop" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/backdrop_scrim" />
 
                     <ProgressBar
                         android:id="@+id/progress_bar_backdrop"
@@ -67,8 +74,8 @@
 
                     <ImageView
                         android:id="@+id/image_view_poster"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="140dp"
+                        android:layout_height="210dp"
                         android:background="@android:color/darker_gray" />
 
                     <ProgressBar
@@ -177,3 +184,5 @@
     <include layout="@layout/content_movie_detail" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+

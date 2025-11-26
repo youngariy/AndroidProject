@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/colorMovieDetailBackground"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.hitanshudhawan.popcorn.activities.PersonDetailActivity"
+    tools:context="com.youngariy.mopick.activities.PersonDetailActivity"
     tools:showIn="@layout/activity_person_detail">
 
     <LinearLayout
@@ -34,13 +34,15 @@
             android:maxLines="7"
             android:textColor="@color/colorMovieDetailTextPrimary" />
 
-        <TextView
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/text_view_read_more_person_detail"
-            android:layout_width="match_parent"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
             android:clickable="true"
             android:text="@string/read_more"
-            android:textAlignment="center"
+            android:textAllCaps="false"
             android:textColor="?attr/colorPrimary"
             android:visibility="gone" />
 
@@ -85,3 +87,5 @@
     </LinearLayout>
 
 </androidx.core.widget.NestedScrollView>
+
+

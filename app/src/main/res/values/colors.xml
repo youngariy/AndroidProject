@@ -1,14 +1,14 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="colorPrimary">#FF6B4A</color>
     <color name="colorPrimaryDark">#E14D2A</color>
     <color name="colorAccent">#FFC857</color>
 
     <color name="colorBackground">#0E1119</color>
-    <color name="colorSurface">#161B25</color>
+    <color name="colorSurface">#27364E</color>
     <color name="colorOnSurface">#F2F4F8</color>
     <color name="colorSubtleText">#C5CAD6</color>
-    <color name="colorDivider">#2A303C</color>
+    <color name="colorDivider">#4B5D7A</color>
 
     <color name="colorNavigationHeaderBackground">#121826</color>
     <color name="colorNavigationDrawerBackgroud">#0E1119</color>
@@ -17,8 +17,10 @@
 
     <!-- Movie detail dark theme colors -->
     <color name="colorMovieDetailBackground">#0E1119</color>
-    <color name="colorMovieDetailSurface">#161B25</color>
+    <color name="colorMovieDetailSurface">#27364E</color>
     <color name="colorMovieDetailTextPrimary">#F2F4F8</color>
     <color name="colorMovieDetailTextSecondary">#C5CAD6</color>
-    <color name="colorMovieDetailDivider">#2A303C</color>
+    <color name="colorMovieDetailDivider">#4B5D7A</color>
+    <color name="mopick_bg">#e54330</color>
 </resources>
+

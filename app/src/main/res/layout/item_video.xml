@@ -12,16 +12,17 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:clickable="true"
-        android:elevation="100dp"
+        android:elevation="8dp"
         android:foreground="?android:attr/selectableItemBackground"
         app:cardBackgroundColor="@color/colorSurface"
-        app:cardCornerRadius="4dp">
+        app:cardCornerRadius="8dp">
 
         <ImageView
             android:id="@+id/image_view_video"
             android:layout_width="240dp"
             android:layout_height="135dp"
-            android:background="@android:color/darker_gray" />
+            android:background="@android:color/darker_gray"
+            android:scaleType="centerCrop" />
 
     </androidx.cardview.widget.CardView>
 
@@ -31,6 +32,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="2dp"
         android:maxLines="2"
+        android:textColor="@color/colorOnSurface"
         android:textAlignment="center" />
 
 </LinearLayout>

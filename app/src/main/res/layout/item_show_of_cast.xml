@@ -2,15 +2,15 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/card_view_show_cast"
-    android:layout_width="wrap_content"
+    android:layout_width="140dp"
     android:layout_height="wrap_content"
     android:layout_margin="4dp"
     android:clickable="true"
-    android:elevation="100dp"
+    android:elevation="8dp"
     android:focusable="true"
     android:foreground="?android:attr/selectableItemBackground"
     app:cardBackgroundColor="@color/colorSurface"
-    app:cardCornerRadius="4dp">
+    app:cardCornerRadius="8dp">
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -19,31 +19,56 @@
 
         <ImageView
             android:id="@+id/image_view_show_cast"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="210dp"
+            android:background="@android:color/darker_gray"
+            android:scaleType="centerCrop" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@android:color/darker_gray" />
-
-        <TextView
-            android:id="@+id/text_view_title_show_cast"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"
-            android:layout_marginTop="8dp"
-            android:ellipsize="end"
-            android:maxLines="2"
-            android:textStyle="bold" />
+            android:layout_marginTop="4dp"
+            android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/text_view_cast_character_show_cast"
-            android:layout_width="match_parent"
-            android:layout_height="35dp"
-            android:layout_marginBottom="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            android:ellipsize="end"
-            android:maxLines="2"
-            android:textSize="12sp" />
+            <TextView
+                android:id="@+id/text_view_title_show_cast"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textColor="@color/colorOnSurface"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:id="@+id/text_view_cast_character_show_cast"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:textColor="@color/colorSubtleText"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/text_view_rating_show_card"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="13sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+        </LinearLayout>
 
     </LinearLayout>
 
