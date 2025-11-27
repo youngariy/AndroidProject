@@ -24,6 +24,7 @@ import com.youngariy.mopick.adapters.MovieBriefsLargeAdapter;
 import com.youngariy.mopick.adapters.MovieBriefsSmallAdapter;
 import com.youngariy.mopick.network.movies.MovieBrief;
 import com.youngariy.mopick.utils.Constants;
+import com.youngariy.mopick.utils.LocaleHelper;
 import com.youngariy.mopick.utils.MovieGenres;
 import com.youngariy.mopick.utils.NetworkConnection;
 import com.youngariy.mopick.viewmodels.MoviesViewModel;
@@ -70,7 +71,8 @@ public class MoviesFragment extends Fragment {
 
         if (NetworkConnection.isConnected(getContext())) {
             observeViewModel();
-            mMoviesViewModel.loadAllMovies(getString(R.string.MOVIE_DB_API_KEY), "US");
+            String region = LocaleHelper.getRegionCode(getContext());
+            mMoviesViewModel.loadAllMovies(getContext(), getString(R.string.MOVIE_DB_API_KEY), region);
             mProgressBar.setVisibility(View.VISIBLE);
         } else {
             Toast.makeText(getContext(), R.string.no_network, Toast.LENGTH_LONG).show();

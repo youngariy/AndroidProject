@@ -4,6 +4,7 @@ import android.content.AsyncTaskLoader;
 import android.content.Context;
 
 import com.youngariy.mopick.R;
+import com.youngariy.mopick.utils.LocaleHelper;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -43,13 +44,16 @@ public class SearchAsyncTaskLoader extends AsyncTaskLoader<SearchResponse> {
     public SearchResponse loadInBackground() {
 
         try {
+            String language = LocaleHelper.getLanguageCode(mContext);
             String urlString = "https://api.themoviedb.org/3/" + "search/multi"
                     + "?"
                     + "api_key=" + mContext.getResources().getString(R.string.MOVIE_DB_API_KEY)
                     + "&"
                     + "query=" + mQuery
                     + "&"
-                    + "page=" + mPage;
+                    + "page=" + mPage
+                    + "&"
+                    + "language=" + language;
             URL url = new URL(urlString);
             HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
             httpURLConnection.setRequestMethod("GET");

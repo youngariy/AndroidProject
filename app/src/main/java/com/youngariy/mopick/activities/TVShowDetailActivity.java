@@ -46,6 +46,7 @@ import com.youngariy.mopick.network.videos.Video;
 import com.youngariy.mopick.network.videos.VideosResponse;
 import com.youngariy.mopick.utils.Constants;
 import com.youngariy.mopick.utils.Favourite;
+import com.youngariy.mopick.utils.LocaleHelper;
 import com.youngariy.mopick.utils.NetworkConnection;
 
 
@@ -59,8 +60,14 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import androidx.annotation.Nullable;
+import android.content.Context;
 
 public class TVShowDetailActivity extends AppCompatActivity {
+
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(LocaleHelper.setLocale(base));
+    }
 
     private int mTVShowId;
 
@@ -262,11 +269,12 @@ public class TVShowDetailActivity extends AppCompatActivity {
 
     private void loadActivity() {
         ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
+        String language = LocaleHelper.getLanguageCode(this);
 
         mPosterProgressBar.setVisibility(View.VISIBLE);
         mBackdropProgressBar.setVisibility(View.VISIBLE);
 
-        mTVShowDetailsCall = apiService.getTVShowDetails(mTVShowId, getResources().getString(R.string.MOVIE_DB_API_KEY));
+        mTVShowDetailsCall = apiService.getTVShowDetails(mTVShowId, getResources().getString(R.string.MOVIE_DB_API_KEY), language);
         mTVShowDetailsCall.enqueue(new Callback<TVShow>() {
             @Override
             public void onResponse(Call<TVShow> call, final Response<TVShow> response) {
@@ -518,7 +526,8 @@ public class TVShowDetailActivity extends AppCompatActivity {
 
     private void setVideos() {
         ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
-        mVideosCall = apiService.getTVShowVideos(mTVShowId, getResources().getString(R.string.MOVIE_DB_API_KEY));
+        String language = LocaleHelper.getLanguageCode(this);
+        mVideosCall = apiService.getTVShowVideos(mTVShowId, getResources().getString(R.string.MOVIE_DB_API_KEY), language);
         mVideosCall.enqueue(new Callback<VideosResponse>() {
             @Override
             public void onResponse(Call<VideosResponse> call, Response<VideosResponse> response) {
@@ -581,7 +590,8 @@ public class TVShowDetailActivity extends AppCompatActivity {
 
     private void setSimilarTVShows() {
         ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
-        mSimilarTVShowsCall = apiService.getSimilarTVShows(mTVShowId, getResources().getString(R.string.MOVIE_DB_API_KEY), 1);
+        String language = LocaleHelper.getLanguageCode(this);
+        mSimilarTVShowsCall = apiService.getSimilarTVShows(mTVShowId, getResources().getString(R.string.MOVIE_DB_API_KEY), 1, language);
         mSimilarTVShowsCall.enqueue(new Callback<SimilarTVShowsResponse>() {
             @Override
             public void onResponse(Call<SimilarTVShowsResponse> call, Response<SimilarTVShowsResponse> response) {

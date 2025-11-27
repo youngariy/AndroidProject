@@ -21,6 +21,7 @@ import com.youngariy.mopick.network.movies.PopularMoviesResponse;
 import com.youngariy.mopick.network.movies.TopRatedMoviesResponse;
 import com.youngariy.mopick.network.movies.UpcomingMoviesResponse;
 import com.youngariy.mopick.utils.Constants;
+import com.youngariy.mopick.utils.LocaleHelper;
 import com.youngariy.mopick.utils.NetworkConnection;
 
 import java.util.ArrayList;
@@ -29,8 +30,14 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import android.content.Context;
 
 public class ViewAllMoviesActivity extends AppCompatActivity {
+
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(LocaleHelper.setLocale(base));
+    }
 
     private RecyclerView mRecyclerView;
     private List<MovieBrief> mMovies;
@@ -82,7 +89,7 @@ public class ViewAllMoviesActivity extends AppCompatActivity {
         mMovies = new ArrayList<>();
         mMoviesAdapter = new MovieBriefsSmallAdapter(this, mMovies);
         mRecyclerView.setAdapter(mMoviesAdapter);
-        final GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 3);
+        final GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2);
         mRecyclerView.setLayoutManager(gridLayoutManager);
 
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -135,10 +142,12 @@ public class ViewAllMoviesActivity extends AppCompatActivity {
         if (pagesOver) return;
 
         ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
+        String language = LocaleHelper.getLanguageCode(this);
+        String region = LocaleHelper.getRegionCode(this);
 
         // Replaced switch with if-else if for String comparison
         if (movieType.equals(Constants.NOW_SHOWING_MOVIES_TYPE)) {
-            mNowShowingMoviesCall = apiService.getNowShowingMovies(getResources().getString(R.string.MOVIE_DB_API_KEY), presentPage, "US");
+            mNowShowingMoviesCall = apiService.getNowShowingMovies(getResources().getString(R.string.MOVIE_DB_API_KEY), presentPage, region, language);
             mNowShowingMoviesCall.enqueue(new Callback<NowShowingMoviesResponse>() {
                 @Override
                 public void onResponse(@NonNull Call<NowShowingMoviesResponse> call, @NonNull Response<NowShowingMoviesResponse> response) {
@@ -164,7 +173,7 @@ public class ViewAllMoviesActivity extends AppCompatActivity {
                 }
             });
         } else if (movieType.equals(Constants.POPULAR_MOVIES_TYPE)) {
-            mPopularMoviesCall = apiService.getPopularMovies(getResources().getString(R.string.MOVIE_DB_API_KEY), presentPage, "US");
+            mPopularMoviesCall = apiService.getPopularMovies(getResources().getString(R.string.MOVIE_DB_API_KEY), presentPage, region, language);
             mPopularMoviesCall.enqueue(new Callback<PopularMoviesResponse>() {
                 @Override
                 public void onResponse(@NonNull Call<PopularMoviesResponse> call, @NonNull Response<PopularMoviesResponse> response) {
@@ -190,7 +199,7 @@ public class ViewAllMoviesActivity extends AppCompatActivity {
                 }
             });
         } else if (movieType.equals(Constants.UPCOMING_MOVIES_TYPE)) {
-            mUpcomingMoviesCall = apiService.getUpcomingMovies(getResources().getString(R.string.MOVIE_DB_API_KEY), presentPage, "US");
+            mUpcomingMoviesCall = apiService.getUpcomingMovies(getResources().getString(R.string.MOVIE_DB_API_KEY), presentPage, region, language);
             mUpcomingMoviesCall.enqueue(new Callback<UpcomingMoviesResponse>() {
                 @Override
                 public void onResponse(@NonNull Call<UpcomingMoviesResponse> call, @NonNull Response<UpcomingMoviesResponse> response) {
@@ -216,7 +225,7 @@ public class ViewAllMoviesActivity extends AppCompatActivity {
                 }
             });
         } else if (movieType.equals(Constants.TOP_RATED_MOVIES_TYPE)) {
-            mTopRatedMoviesCall = apiService.getTopRatedMovies(getResources().getString(R.string.MOVIE_DB_API_KEY), presentPage, "US");
+            mTopRatedMoviesCall = apiService.getTopRatedMovies(getResources().getString(R.string.MOVIE_DB_API_KEY), presentPage, region, language);
             mTopRatedMoviesCall.enqueue(new Callback<TopRatedMoviesResponse>() {
                 @Override
                 public void onResponse(@NonNull Call<TopRatedMoviesResponse> call, @NonNull Response<TopRatedMoviesResponse> response) {

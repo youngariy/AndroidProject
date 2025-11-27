@@ -1,5 +1,6 @@
 package com.youngariy.mopick.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -25,6 +26,7 @@ import com.youngariy.mopick.fragments.FavouritesFragment;
 import com.youngariy.mopick.fragments.MoviesFragment;
 import com.youngariy.mopick.fragments.TVShowsFragment;
 import com.youngariy.mopick.utils.Constants;
+import com.youngariy.mopick.utils.LocaleHelper;
 import com.youngariy.mopick.utils.NetworkConnection;
 
 public class MainActivity extends AppCompatActivity {
@@ -32,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
     private boolean doubleBackToExitPressedOnce;
     private Toolbar mToolbar;
     private com.google.android.material.bottomnavigation.BottomNavigationView mBottomNavigation;
+    private String currentLanguage;
 
     private BottomNavigationView.OnItemSelectedListener mOnNavigationItemSelectedListener
             = item -> {
@@ -56,8 +59,14 @@ public class MainActivity extends AppCompatActivity {
     };
 
     @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(LocaleHelper.setLocale(base));
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        currentLanguage = LocaleHelper.getLanguage(this);
         setContentView(R.layout.activity_main);
 
         mToolbar = findViewById(R.id.toolbar);
@@ -70,6 +79,15 @@ public class MainActivity extends AppCompatActivity {
         setTitle(R.string.movies);
         applyMoviesChrome();
         setFragment(new MoviesFragment());
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        String savedLanguage = LocaleHelper.getLanguage(this);
+        if (currentLanguage != null && !currentLanguage.equals(savedLanguage)) {
+            recreate();
+        }
     }
 
     @Override
