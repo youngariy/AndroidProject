@@ -31,6 +31,7 @@ import com.youngariy.mopick.network.tvshows.PopularTVShowsResponse;
 import com.youngariy.mopick.network.tvshows.TVShowBrief;
 import com.youngariy.mopick.network.tvshows.TopRatedTVShowsResponse;
 import com.youngariy.mopick.utils.Constants;
+import com.youngariy.mopick.utils.LocaleHelper;
 import com.youngariy.mopick.utils.NetworkConnection;
 import com.youngariy.mopick.utils.TVShowGenres;
 
@@ -263,7 +264,8 @@ public class TVShowsFragment extends Fragment {
         } else {
             ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
             mProgressBar.setVisibility(View.VISIBLE);
-            mGenresListCall = apiService.getTVShowGenresList(getResources().getString(R.string.MOVIE_DB_API_KEY));
+            String language = LocaleHelper.getLanguageCode(getContext());
+            mGenresListCall = apiService.getTVShowGenresList(getResources().getString(R.string.MOVIE_DB_API_KEY), language);
             mGenresListCall.enqueue(new Callback<GenresList>() {
                 @Override
                 public void onResponse(Call<GenresList> call, Response<GenresList> response) {
@@ -295,7 +297,8 @@ public class TVShowsFragment extends Fragment {
     private void loadAiringTodayTVShows() {
         final ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
         mProgressBar.setVisibility(View.VISIBLE);
-        mAiringTodayTVShowsCall = apiService.getAiringTodayTVShows(getResources().getString(R.string.MOVIE_DB_API_KEY), 1);
+        String language = LocaleHelper.getLanguageCode(getContext());
+        mAiringTodayTVShowsCall = apiService.getAiringTodayTVShows(getResources().getString(R.string.MOVIE_DB_API_KEY), 1, language);
         mAiringTodayTVShowsCall.enqueue(new Callback<AiringTodayTVShowsResponse>() {
             @Override
             public void onResponse(Call<AiringTodayTVShowsResponse> call, Response<AiringTodayTVShowsResponse> response) {
@@ -327,7 +330,8 @@ public class TVShowsFragment extends Fragment {
     private void loadOnTheAirTVShows() {
         ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
         mProgressBar.setVisibility(View.VISIBLE);
-        mOnTheAirTVShowsCall = apiService.getOnTheAirTVShows(getResources().getString(R.string.MOVIE_DB_API_KEY), 1);
+        String language = LocaleHelper.getLanguageCode(getContext());
+        mOnTheAirTVShowsCall = apiService.getOnTheAirTVShows(getResources().getString(R.string.MOVIE_DB_API_KEY), 1, language);
         mOnTheAirTVShowsCall.enqueue(new Callback<OnTheAirTVShowsResponse>() {
             @Override
             public void onResponse(Call<OnTheAirTVShowsResponse> call, Response<OnTheAirTVShowsResponse> response) {
@@ -359,7 +363,8 @@ public class TVShowsFragment extends Fragment {
     private void loadPopularTVShows() {
         final ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
         mProgressBar.setVisibility(View.VISIBLE);
-        mPopularTVShowsCall = apiService.getPopularTVShows(getResources().getString(R.string.MOVIE_DB_API_KEY), 1);
+        String language = LocaleHelper.getLanguageCode(getContext());
+        mPopularTVShowsCall = apiService.getPopularTVShows(getResources().getString(R.string.MOVIE_DB_API_KEY), 1, language);
         mPopularTVShowsCall.enqueue(new Callback<PopularTVShowsResponse>() {
             @Override
             public void onResponse(Call<PopularTVShowsResponse> call, Response<PopularTVShowsResponse> response) {
@@ -391,7 +396,8 @@ public class TVShowsFragment extends Fragment {
     private void loadTopRatedTVShows() {
         ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
         mProgressBar.setVisibility(View.VISIBLE);
-        mTopRatedTVShowsCall = apiService.getTopRatedTVShows(getResources().getString(R.string.MOVIE_DB_API_KEY), 1);
+        String language = LocaleHelper.getLanguageCode(getContext());
+        mTopRatedTVShowsCall = apiService.getTopRatedTVShows(getResources().getString(R.string.MOVIE_DB_API_KEY), 1, language);
         mTopRatedTVShowsCall.enqueue(new Callback<TopRatedTVShowsResponse>() {
             @Override
             public void onResponse(Call<TopRatedTVShowsResponse> call, Response<TopRatedTVShowsResponse> response) {

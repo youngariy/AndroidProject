@@ -21,6 +21,7 @@ import com.youngariy.mopick.network.tvshows.PopularTVShowsResponse;
 import com.youngariy.mopick.network.tvshows.TVShowBrief;
 import com.youngariy.mopick.network.tvshows.TopRatedTVShowsResponse;
 import com.youngariy.mopick.utils.Constants;
+import com.youngariy.mopick.utils.LocaleHelper;
 import com.youngariy.mopick.utils.NetworkConnection;
 
 import java.util.ArrayList;
@@ -29,8 +30,14 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import android.content.Context;
 
 public class ViewAllTVShowsActivity extends AppCompatActivity {
+
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(LocaleHelper.setLocale(base));
+    }
 
     private RecyclerView mRecyclerView;
     private List<TVShowBrief> mTVShows;
@@ -82,7 +89,7 @@ public class ViewAllTVShowsActivity extends AppCompatActivity {
         mTVShows = new ArrayList<>();
         mTVShowsAdapter = new TVShowBriefsSmallAdapter(this, mTVShows);
         mRecyclerView.setAdapter(mTVShowsAdapter);
-        final GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 3);
+        final GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2);
         mRecyclerView.setLayoutManager(gridLayoutManager);
 
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -135,10 +142,11 @@ public class ViewAllTVShowsActivity extends AppCompatActivity {
         if (pagesOver) return;
 
         ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
+        String language = LocaleHelper.getLanguageCode(this);
 
         // Replaced switch with if-else if for String comparison
         if (tvShowType.equals(Constants.AIRING_TODAY_TV_SHOWS_TYPE)) {
-            mAiringTodayTVShowsCall = apiService.getAiringTodayTVShows(getResources().getString(R.string.MOVIE_DB_API_KEY), presentPage);
+            mAiringTodayTVShowsCall = apiService.getAiringTodayTVShows(getResources().getString(R.string.MOVIE_DB_API_KEY), presentPage, language);
             mAiringTodayTVShowsCall.enqueue(new Callback<AiringTodayTVShowsResponse>() {
                 @Override
                 public void onResponse(@NonNull Call<AiringTodayTVShowsResponse> call, @NonNull Response<AiringTodayTVShowsResponse> response) {
@@ -164,7 +172,7 @@ public class ViewAllTVShowsActivity extends AppCompatActivity {
                 }
             });
         } else if (tvShowType.equals(Constants.ON_THE_AIR_TV_SHOWS_TYPE)) {
-            mOnTheAirTVShowsCall = apiService.getOnTheAirTVShows(getResources().getString(R.string.MOVIE_DB_API_KEY), presentPage);
+            mOnTheAirTVShowsCall = apiService.getOnTheAirTVShows(getResources().getString(R.string.MOVIE_DB_API_KEY), presentPage, language);
             mOnTheAirTVShowsCall.enqueue(new Callback<OnTheAirTVShowsResponse>() {
                 @Override
                 public void onResponse(@NonNull Call<OnTheAirTVShowsResponse> call, @NonNull Response<OnTheAirTVShowsResponse> response) {
@@ -190,7 +198,7 @@ public class ViewAllTVShowsActivity extends AppCompatActivity {
                 }
             });
         } else if (tvShowType.equals(Constants.POPULAR_TV_SHOWS_TYPE)) {
-            mPopularTVShowsCall = apiService.getPopularTVShows(getResources().getString(R.string.MOVIE_DB_API_KEY), presentPage);
+            mPopularTVShowsCall = apiService.getPopularTVShows(getResources().getString(R.string.MOVIE_DB_API_KEY), presentPage, language);
             mPopularTVShowsCall.enqueue(new Callback<PopularTVShowsResponse>() {
                 @Override
                 public void onResponse(@NonNull Call<PopularTVShowsResponse> call, @NonNull Response<PopularTVShowsResponse> response) {
@@ -216,7 +224,7 @@ public class ViewAllTVShowsActivity extends AppCompatActivity {
                 }
             });
         } else if (tvShowType.equals(Constants.TOP_RATED_TV_SHOWS_TYPE)) {
-            mTopRatedTVShowsCall = apiService.getTopRatedTVShows(getResources().getString(R.string.MOVIE_DB_API_KEY), presentPage);
+            mTopRatedTVShowsCall = apiService.getTopRatedTVShows(getResources().getString(R.string.MOVIE_DB_API_KEY), presentPage, language);
             mTopRatedTVShowsCall.enqueue(new Callback<TopRatedTVShowsResponse>() {
                 @Override
                 public void onResponse(@NonNull Call<TopRatedTVShowsResponse> call, @NonNull Response<TopRatedTVShowsResponse> response) {

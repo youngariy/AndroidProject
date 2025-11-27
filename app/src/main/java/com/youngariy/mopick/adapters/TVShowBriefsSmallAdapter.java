@@ -12,6 +12,8 @@ import android.widget.TextView;
 
 import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -39,7 +41,8 @@ public class TVShowBriefsSmallAdapter extends RecyclerView.Adapter<TVShowBriefsS
 
     @Override
     public TVShowViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new TVShowViewHolder(LayoutInflater.from(mContext).inflate(R.layout.item_show_small, parent, false));
+        View view = LayoutInflater.from(mContext).inflate(R.layout.item_show_small, parent, false);
+        return new TVShowViewHolder(view, parent);
     }
 
     @Override
@@ -83,7 +86,7 @@ public class TVShowBriefsSmallAdapter extends RecyclerView.Adapter<TVShowBriefsS
         public ImageButton tvShowFavImageButton;
 
 
-        public TVShowViewHolder(View itemView) {
+        public TVShowViewHolder(View itemView, ViewGroup parent) {
             super(itemView);
             tvShowCard = (CardView) itemView.findViewById(R.id.card_view_show_card);
             tvShowPosterImageView = (ImageView) itemView.findViewById(R.id.image_view_show_card);
@@ -91,16 +94,46 @@ public class TVShowBriefsSmallAdapter extends RecyclerView.Adapter<TVShowBriefsS
             tvShowRatingTextView = (TextView) itemView.findViewById(R.id.text_view_rating_show_card);
             tvShowFavImageButton = (ImageButton) itemView.findViewById(R.id.image_button_fav_show_card);
 
-            // Target max two cards visible per viewport in horizontal lists.
-            int screenWidth = mContext.getResources().getDisplayMetrics().widthPixels;
-            int cardWidth = (int) (screenWidth * 0.46);
-            RecyclerView.LayoutParams cardParams = (RecyclerView.LayoutParams) tvShowCard.getLayoutParams();
-            if (cardParams != null) {
-                cardParams.width = cardWidth;
-                tvShowCard.setLayoutParams(cardParams);
+            // Check if parent RecyclerView uses GridLayoutManager
+            // If GridLayoutManager, calculate width based on span count
+            // If LinearLayoutManager (horizontal), set fixed width for horizontal scrolling
+            boolean isGridLayout = false;
+            int spanCount = 2; // default for GridLayoutManager
+            if (parent instanceof RecyclerView) {
+                RecyclerView recyclerView = (RecyclerView) parent;
+                if (recyclerView.getLayoutManager() instanceof GridLayoutManager) {
+                    isGridLayout = true;
+                    GridLayoutManager gridLayoutManager = (GridLayoutManager) recyclerView.getLayoutManager();
+                    spanCount = gridLayoutManager.getSpanCount();
+                }
             }
-            tvShowPosterImageView.getLayoutParams().width = cardWidth;
-            tvShowPosterImageView.getLayoutParams().height = (int) (cardWidth / 0.66f);
+
+            if (isGridLayout) {
+                // For GridLayoutManager, calculate width based on span count
+                int screenWidth = mContext.getResources().getDisplayMetrics().widthPixels;
+                int recyclerViewPadding = (int) (8 * mContext.getResources().getDisplayMetrics().density); // 4dp left + 4dp right
+                int totalMargin = (int) (12 * mContext.getResources().getDisplayMetrics().density * spanCount); // 6dp margin * 2 sides * spanCount
+                int cardWidth = (screenWidth - recyclerViewPadding - totalMargin) / spanCount;
+                
+                RecyclerView.LayoutParams cardParams = (RecyclerView.LayoutParams) tvShowCard.getLayoutParams();
+                if (cardParams != null) {
+                    cardParams.width = cardWidth;
+                    tvShowCard.setLayoutParams(cardParams);
+                }
+                tvShowPosterImageView.getLayoutParams().width = cardWidth;
+                tvShowPosterImageView.getLayoutParams().height = (int) (cardWidth / 0.66f);
+            } else {
+                // Target max two cards visible per viewport in horizontal lists.
+                int screenWidth = mContext.getResources().getDisplayMetrics().widthPixels;
+                int cardWidth = (int) (screenWidth * 0.46);
+                RecyclerView.LayoutParams cardParams = (RecyclerView.LayoutParams) tvShowCard.getLayoutParams();
+                if (cardParams != null) {
+                    cardParams.width = cardWidth;
+                    tvShowCard.setLayoutParams(cardParams);
+                }
+                tvShowPosterImageView.getLayoutParams().width = cardWidth;
+                tvShowPosterImageView.getLayoutParams().height = (int) (cardWidth / 0.66f);
+            }
             tvShowRatingTextView.setTextColor(ContextCompat.getColor(mContext, R.color.colorAccent));
 
             tvShowCard.setOnClickListener(new View.OnClickListener() {

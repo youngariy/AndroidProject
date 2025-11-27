@@ -1,5 +1,7 @@
 package com.youngariy.mopick.viewmodels;
 
+import android.content.Context;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -13,6 +15,7 @@ import com.youngariy.mopick.network.movies.NowShowingMoviesResponse;
 import com.youngariy.mopick.network.movies.PopularMoviesResponse;
 import com.youngariy.mopick.network.movies.TopRatedMoviesResponse;
 import com.youngariy.mopick.network.movies.UpcomingMoviesResponse;
+import com.youngariy.mopick.utils.LocaleHelper;
 
 import java.util.List;
 
@@ -53,10 +56,11 @@ public class MoviesViewModel extends ViewModel {
         return error;
     }
 
-    public void loadAllMovies(String apiKey, String region) {
+    public void loadAllMovies(Context context, String apiKey, String region) {
         ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
+        String language = LocaleHelper.getLanguageCode(context);
 
-        apiService.getMovieGenresList(apiKey).enqueue(new Callback<GenresList>() {
+        apiService.getMovieGenresList(apiKey, language).enqueue(new Callback<GenresList>() {
             @Override
             public void onResponse(Call<GenresList> call, Response<GenresList> response) {
                 if (response.isSuccessful()) {
@@ -72,7 +76,7 @@ public class MoviesViewModel extends ViewModel {
             }
         });
 
-        apiService.getNowShowingMovies(apiKey, 1, region).enqueue(new Callback<NowShowingMoviesResponse>() {
+        apiService.getNowShowingMovies(apiKey, 1, region, language).enqueue(new Callback<NowShowingMoviesResponse>() {
             @Override
             public void onResponse(Call<NowShowingMoviesResponse> call, Response<NowShowingMoviesResponse> response) {
                 if (response.isSuccessful()) {
@@ -88,7 +92,7 @@ public class MoviesViewModel extends ViewModel {
             }
         });
 
-        apiService.getPopularMovies(apiKey, 1, region).enqueue(new Callback<PopularMoviesResponse>() {
+        apiService.getPopularMovies(apiKey, 1, region, language).enqueue(new Callback<PopularMoviesResponse>() {
             @Override
             public void onResponse(Call<PopularMoviesResponse> call, Response<PopularMoviesResponse> response) {
                 if (response.isSuccessful()) {
@@ -104,7 +108,7 @@ public class MoviesViewModel extends ViewModel {
             }
         });
 
-        apiService.getUpcomingMovies(apiKey, 1, region).enqueue(new Callback<UpcomingMoviesResponse>() {
+        apiService.getUpcomingMovies(apiKey, 1, region, language).enqueue(new Callback<UpcomingMoviesResponse>() {
             @Override
             public void onResponse(Call<UpcomingMoviesResponse> call, Response<UpcomingMoviesResponse> response) {
                 if (response.isSuccessful()) {
@@ -120,7 +124,7 @@ public class MoviesViewModel extends ViewModel {
             }
         });
 
-        apiService.getTopRatedMovies(apiKey, 1, region).enqueue(new Callback<TopRatedMoviesResponse>() {
+        apiService.getTopRatedMovies(apiKey, 1, region, language).enqueue(new Callback<TopRatedMoviesResponse>() {
             @Override
             public void onResponse(Call<TopRatedMoviesResponse> call, Response<TopRatedMoviesResponse> response) {
                 if (response.isSuccessful()) {

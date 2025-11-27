@@ -12,6 +12,8 @@ import android.widget.TextView;
 
 import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -40,7 +42,8 @@ public class MovieBriefsSmallAdapter extends RecyclerView.Adapter<MovieBriefsSma
 
     @Override
     public MovieViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new MovieViewHolder(LayoutInflater.from(mContext).inflate(R.layout.item_show_small, parent, false));
+        View view = LayoutInflater.from(mContext).inflate(R.layout.item_show_small, parent, false);
+        return new MovieViewHolder(view, parent);
     }
 
     @Override
@@ -84,7 +87,7 @@ public class MovieBriefsSmallAdapter extends RecyclerView.Adapter<MovieBriefsSma
         public ImageButton movieFavImageButton;
 
 
-        public MovieViewHolder(View itemView) {
+        public MovieViewHolder(View itemView, ViewGroup parent) {
             super(itemView);
             movieCard = (CardView) itemView.findViewById(R.id.card_view_show_card);
             moviePosterImageView = (ImageView) itemView.findViewById(R.id.image_view_show_card);
@@ -92,16 +95,46 @@ public class MovieBriefsSmallAdapter extends RecyclerView.Adapter<MovieBriefsSma
             movieRatingTextView = (TextView) itemView.findViewById(R.id.text_view_rating_show_card);
             movieFavImageButton = (ImageButton) itemView.findViewById(R.id.image_button_fav_show_card);
 
-            // Target max two cards visible per viewport in horizontal lists.
-            int screenWidth = mContext.getResources().getDisplayMetrics().widthPixels;
-            int cardWidth = (int) (screenWidth * 0.46);
-            RecyclerView.LayoutParams cardParams = (RecyclerView.LayoutParams) movieCard.getLayoutParams();
-            if (cardParams != null) {
-                cardParams.width = cardWidth;
-                movieCard.setLayoutParams(cardParams);
+            // Check if parent RecyclerView uses GridLayoutManager
+            // If GridLayoutManager, calculate width based on span count
+            // If LinearLayoutManager (horizontal), set fixed width for horizontal scrolling
+            boolean isGridLayout = false;
+            int spanCount = 2; // default for GridLayoutManager
+            if (parent instanceof RecyclerView) {
+                RecyclerView recyclerView = (RecyclerView) parent;
+                if (recyclerView.getLayoutManager() instanceof GridLayoutManager) {
+                    isGridLayout = true;
+                    GridLayoutManager gridLayoutManager = (GridLayoutManager) recyclerView.getLayoutManager();
+                    spanCount = gridLayoutManager.getSpanCount();
+                }
             }
-            moviePosterImageView.getLayoutParams().width = cardWidth;
-            moviePosterImageView.getLayoutParams().height = (int) (cardWidth / 0.66f);
+
+            if (isGridLayout) {
+                // For GridLayoutManager, calculate width based on span count
+                int screenWidth = mContext.getResources().getDisplayMetrics().widthPixels;
+                int recyclerViewPadding = (int) (8 * mContext.getResources().getDisplayMetrics().density); // 4dp left + 4dp right
+                int totalMargin = (int) (12 * mContext.getResources().getDisplayMetrics().density * spanCount); // 6dp margin * 2 sides * spanCount
+                int cardWidth = (screenWidth - recyclerViewPadding - totalMargin) / spanCount;
+                
+                RecyclerView.LayoutParams cardParams = (RecyclerView.LayoutParams) movieCard.getLayoutParams();
+                if (cardParams != null) {
+                    cardParams.width = cardWidth;
+                    movieCard.setLayoutParams(cardParams);
+                }
+                moviePosterImageView.getLayoutParams().width = cardWidth;
+                moviePosterImageView.getLayoutParams().height = (int) (cardWidth / 0.66f);
+            } else {
+                // Target max two cards visible per viewport in horizontal lists.
+                int screenWidth = mContext.getResources().getDisplayMetrics().widthPixels;
+                int cardWidth = (int) (screenWidth * 0.46);
+                RecyclerView.LayoutParams cardParams = (RecyclerView.LayoutParams) movieCard.getLayoutParams();
+                if (cardParams != null) {
+                    cardParams.width = cardWidth;
+                    movieCard.setLayoutParams(cardParams);
+                }
+                moviePosterImageView.getLayoutParams().width = cardWidth;
+                moviePosterImageView.getLayoutParams().height = (int) (cardWidth / 0.66f);
+            }
             movieCard.setCardBackgroundColor(ContextCompat.getColor(mContext, R.color.colorMovieDetailSurface));
             movieTitleTextView.setTextColor(ContextCompat.getColor(mContext, R.color.colorMovieDetailTextPrimary));
             moviePosterImageView.setBackgroundColor(ContextCompat.getColor(mContext, R.color.colorMovieDetailDivider));

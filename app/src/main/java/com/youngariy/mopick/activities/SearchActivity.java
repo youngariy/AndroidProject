@@ -19,13 +19,20 @@ import com.youngariy.mopick.network.search.SearchAsyncTaskLoader;
 import com.youngariy.mopick.network.search.SearchResponse;
 import com.youngariy.mopick.network.search.SearchResult;
 import com.youngariy.mopick.utils.Constants;
+import com.youngariy.mopick.utils.LocaleHelper;
 
 import java.util.ArrayList;
 import java.util.List;
+import android.content.Context;
 
 //import fr.castorflex.android.smoothprogressbar.SmoothProgressBar;
 
 public class SearchActivity extends AppCompatActivity {
+
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(LocaleHelper.setLocale(base));
+    }
 
     private String mQuery;
 

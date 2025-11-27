@@ -33,71 +33,76 @@ public interface ApiInterface {
     //MOVIES
 
     @GET("movie/now_playing")
-    Call<NowShowingMoviesResponse> getNowShowingMovies(@Query("api_key") String apiKey, @Query("page") Integer page, @Query("region") String region);
+    Call<NowShowingMoviesResponse> getNowShowingMovies(@Query("api_key") String apiKey, @Query("page") Integer page, @Query("region") String region, @Query("language") String language);
 
     @GET("movie/popular")
-    Call<PopularMoviesResponse> getPopularMovies(@Query("api_key") String apiKey, @Query("page") Integer page, @Query("region") String region);
+    Call<PopularMoviesResponse> getPopularMovies(@Query("api_key") String apiKey, @Query("page") Integer page, @Query("region") String region, @Query("language") String language);
 
     @GET("movie/upcoming")
-    Call<UpcomingMoviesResponse> getUpcomingMovies(@Query("api_key") String apiKey, @Query("page") Integer page, @Query("region") String region);
+    Call<UpcomingMoviesResponse> getUpcomingMovies(@Query("api_key") String apiKey, @Query("page") Integer page, @Query("region") String region, @Query("language") String language);
 
     @GET("movie/top_rated")
-    Call<TopRatedMoviesResponse> getTopRatedMovies(@Query("api_key") String apiKey, @Query("page") Integer page, @Query("region") String region);
+    Call<TopRatedMoviesResponse> getTopRatedMovies(@Query("api_key") String apiKey, @Query("page") Integer page, @Query("region") String region, @Query("language") String language);
 
     @GET("movie/{id}")
-    Call<Movie> getMovieDetails(@Path("id") Integer movieId, @Query("api_key") String apiKey);
+    Call<Movie> getMovieDetails(@Path("id") Integer movieId, @Query("api_key") String apiKey, @Query("language") String language);
 
     @GET("movie/{id}/videos")
-    Call<VideosResponse> getMovieVideos(@Path("id") Integer movieId, @Query("api_key") String apiKey);
+    Call<VideosResponse> getMovieVideos(@Path("id") Integer movieId, @Query("api_key") String apiKey, @Query("language") String language);
 
     @GET("movie/{id}/credits")
     Call<MovieCreditsResponse> getMovieCredits(@Path("id") Integer movieId, @Query("api_key") String apiKey);
 
     @GET("movie/{id}/similar")
-    Call<SimilarMoviesResponse> getSimilarMovies(@Path("id") Integer movieId, @Query("api_key") String apiKey, @Query("page") Integer page);
+    Call<SimilarMoviesResponse> getSimilarMovies(@Path("id") Integer movieId, @Query("api_key") String apiKey, @Query("page") Integer page, @Query("language") String language);
 
     @GET("genre/movie/list")
-    Call<com.youngariy.mopick.network.movies.GenresList> getMovieGenresList(@Query("api_key") String apiKey);
+    Call<com.youngariy.mopick.network.movies.GenresList> getMovieGenresList(@Query("api_key") String apiKey, @Query("language") String language);
 
     //TV SHOWS
 
     @GET("tv/airing_today")
-    Call<AiringTodayTVShowsResponse> getAiringTodayTVShows(@Query("api_key") String apiKey, @Query("page") Integer page);
+    Call<AiringTodayTVShowsResponse> getAiringTodayTVShows(@Query("api_key") String apiKey, @Query("page") Integer page, @Query("language") String language);
 
     @GET("tv/on_the_air")
-    Call<OnTheAirTVShowsResponse> getOnTheAirTVShows(@Query("api_key") String apiKey, @Query("page") Integer page);
+    Call<OnTheAirTVShowsResponse> getOnTheAirTVShows(@Query("api_key") String apiKey, @Query("page") Integer page, @Query("language") String language);
 
     @GET("tv/popular")
-    Call<PopularTVShowsResponse> getPopularTVShows(@Query("api_key") String apiKey, @Query("page") Integer page);
+    Call<PopularTVShowsResponse> getPopularTVShows(@Query("api_key") String apiKey, @Query("page") Integer page, @Query("language") String language);
 
     @GET("tv/top_rated")
-    Call<TopRatedTVShowsResponse> getTopRatedTVShows(@Query("api_key") String apiKey, @Query("page") Integer page);
+    Call<TopRatedTVShowsResponse> getTopRatedTVShows(@Query("api_key") String apiKey, @Query("page") Integer page, @Query("language") String language);
 
     @GET("tv/{id}")
-    Call<TVShow> getTVShowDetails(@Path("id") Integer tvShowId, @Query("api_key") String apiKey);
+    Call<TVShow> getTVShowDetails(@Path("id") Integer tvShowId, @Query("api_key") String apiKey, @Query("language") String language);
 
     @GET("tv/{id}/videos")
-    Call<VideosResponse> getTVShowVideos(@Path("id") Integer movieId, @Query("api_key") String apiKey);
+    Call<VideosResponse> getTVShowVideos(@Path("id") Integer movieId, @Query("api_key") String apiKey, @Query("language") String language);
 
     @GET("tv/{id}/credits")
     Call<TVShowCreditsResponse> getTVShowCredits(@Path("id") Integer movieId, @Query("api_key") String apiKey);
 
     @GET("tv/{id}/similar")
-    Call<SimilarTVShowsResponse> getSimilarTVShows(@Path("id") Integer movieId, @Query("api_key") String apiKey, @Query("page") Integer page);
+    Call<SimilarTVShowsResponse> getSimilarTVShows(@Path("id") Integer movieId, @Query("api_key") String apiKey, @Query("page") Integer page, @Query("language") String language);
 
     @GET("genre/tv/list")
-    Call<com.youngariy.mopick.network.tvshows.GenresList> getTVShowGenresList(@Query("api_key") String apiKey);
+    Call<com.youngariy.mopick.network.tvshows.GenresList> getTVShowGenresList(@Query("api_key") String apiKey, @Query("language") String language);
 
     //PERSON
 
     @GET("person/{id}")
-    Call<Person> getPersonDetails(@Path("id") Integer personId, @Query("api_key") String apiKey);
+    Call<Person> getPersonDetails(@Path("id") Integer personId, @Query("api_key") String apiKey, @Query("language") String language);
 
     @GET("person/{id}/movie_credits")
-    Call<MovieCastsOfPersonResponse> getMovieCastsOfPerson(@Path("id") Integer personId, @Query("api_key") String apiKey);
+    Call<MovieCastsOfPersonResponse> getMovieCastsOfPerson(@Path("id") Integer personId, @Query("api_key") String apiKey, @Query("language") String language);
 
     @GET("person/{id}/tv_credits")
-    Call<TVCastsOfPersonResponse> getTVCastsOfPerson(@Path("id") Integer personId, @Query("api_key") String apiKey);
+    Call<TVCastsOfPersonResponse> getTVCastsOfPerson(@Path("id") Integer personId, @Query("api_key") String apiKey, @Query("language") String language);
+
+    //SEARCH
+
+    @GET("search/multi")
+    Call<com.youngariy.mopick.network.search.SearchResponse> search(@Query("api_key") String apiKey, @Query("query") String query, @Query("page") Integer page, @Query("language") String language);
 
 }
 

@@ -45,6 +45,7 @@ import com.youngariy.mopick.network.videos.Video;
 import com.youngariy.mopick.network.videos.VideosResponse;
 import com.youngariy.mopick.utils.Constants;
 import com.youngariy.mopick.utils.Favourite;
+import com.youngariy.mopick.utils.LocaleHelper;
 import com.youngariy.mopick.utils.NetworkConnection;
 
 
@@ -58,9 +59,15 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import androidx.annotation.Nullable;
+import android.content.Context;
 
 // hitanshu : MovieDetailActivity and TVShowDetailActivity are mostly similar
 public class MovieDetailActivity extends AppCompatActivity {
+
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(LocaleHelper.setLocale(base));
+    }
 
     private int mMovieId;
 
@@ -263,11 +270,12 @@ public class MovieDetailActivity extends AppCompatActivity {
 
     private void loadActivity() {
         ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
+        String language = LocaleHelper.getLanguageCode(this);
 
         mPosterProgressBar.setVisibility(View.VISIBLE);
         mBackdropProgressBar.setVisibility(View.VISIBLE);
 
-        mMovieDetailsCall = apiService.getMovieDetails(mMovieId, getResources().getString(R.string.MOVIE_DB_API_KEY));
+        mMovieDetailsCall = apiService.getMovieDetails(mMovieId, getResources().getString(R.string.MOVIE_DB_API_KEY), language);
         mMovieDetailsCall.enqueue(new Callback<Movie>() {
             @Override
             public void onResponse(Call<Movie> call, final Response<Movie> response) {
@@ -485,7 +493,8 @@ public class MovieDetailActivity extends AppCompatActivity {
 
     private void setTrailers() {
         ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
-        mMovieTrailersCall = apiService.getMovieVideos(mMovieId, getResources().getString(R.string.MOVIE_DB_API_KEY));
+        String language = LocaleHelper.getLanguageCode(this);
+        mMovieTrailersCall = apiService.getMovieVideos(mMovieId, getResources().getString(R.string.MOVIE_DB_API_KEY), language);
         mMovieTrailersCall.enqueue(new Callback<VideosResponse>() {
             @Override
             public void onResponse(Call<VideosResponse> call, Response<VideosResponse> response) {
@@ -548,7 +557,8 @@ public class MovieDetailActivity extends AppCompatActivity {
 
     private void setSimilarMovies() {
         ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
-        mSimilarMoviesCall = apiService.getSimilarMovies(mMovieId, getResources().getString(R.string.MOVIE_DB_API_KEY), 1);
+        String language = LocaleHelper.getLanguageCode(this);
+        mSimilarMoviesCall = apiService.getSimilarMovies(mMovieId, getResources().getString(R.string.MOVIE_DB_API_KEY), 1, language);
         mSimilarMoviesCall.enqueue(new Callback<SimilarMoviesResponse>() {
             @Override
             public void onResponse(Call<SimilarMoviesResponse> call, Response<SimilarMoviesResponse> response) {

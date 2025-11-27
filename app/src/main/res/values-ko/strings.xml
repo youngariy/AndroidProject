@@ -1,0 +1,81 @@
+<resources>
+    <string name="app_name">Mopick</string>
+    <string name="nav_tagline">신선한 추천, 바로 시청하세요</string>
+
+    <string name="navigation_drawer_open">네비게이션 드로어 열기</string>
+    <string name="navigation_drawer_close">네비게이션 드로어 닫기</string>
+
+    <string name="movies">영화</string>
+    <string name="tv_shows">TV 프로그램</string>
+    <string name="favorites">즐겨찾기</string>
+    <string name="settings">설정</string>
+    <string name="about">정보</string>
+    <string name="language">언어</string>
+    <string name="language_korean">한국어</string>
+    <string name="language_english">English</string>
+    <string name="language_chinese">中文</string>
+    <string name="language_japanese">日本語</string>
+    <string name="change_language">언어 변경</string>
+
+    <string name="now_showing">현재 상영중</string>
+    <string name="popular">인기</string>
+    <string name="upcoming">개봉 예정</string>
+    <string name="top_rated">최고 평점</string>
+    <string name="airing_today">오늘 방영</string>
+    <string name="on_the_air">방영중</string>
+    <string name="view_all">전체 보기</string>
+
+    <string name="now_showing_movies">현재 상영중인 영화</string>
+    <string name="popular_movies">인기 영화</string>
+    <string name="upcoming_movies">개봉 예정 영화</string>
+    <string name="top_rated_movies">최고 평점 영화</string>
+
+    <string name="airing_today_tv_shows">오늘 방영 TV 프로그램</string>
+    <string name="on_the_air_tv_shows">방영중인 TV 프로그램</string>
+    <string name="popular_tv_shows">인기 TV 프로그램</string>
+    <string name="top_rated_tv_shows">최고 평점 TV 프로그램</string>
+
+    <string name="share">공유</string>
+    <string name="rate_us">평가하기</string>
+    <string name="feedback">피드백</string>
+    <string name="source_code_on_github">GitHub 소스 코드</string>
+    <string name="open_source_licenses">오픈소스 라이선스</string>
+    <string name="version">버전</string>
+
+    <string name="read_more">더 보기</string>
+    <string name="movie_details">개봉일  \n상영 시간  </string>
+    <string name="trailers">예고편</string>
+    <string name="cast">출연진</string>
+    <string name="similar_movies">유사한 영화</string>
+    <string name="biography">약력</string>
+    <string name="movie_cast">영화 출연작</string>
+    <string name="tv_cast">TV 출연작</string>
+    <string name="tv_show_details">첫 방영일  \n상영 시간  \n상태  \n제작 국가  \n방송사  </string>
+    <string name="videos">비디오</string>
+    <string name="similar_tv_shows">유사한 TV 프로그램</string>
+
+    <string name="no_fav_movies">즐겨찾기한 영화가 없습니다</string>
+    <string name="no_fav_tv_shows">즐겨찾기한 TV 프로그램이 없습니다</string>
+
+    <string name="search_movies_tv_shows_people">영화, TV 프로그램, 인물 검색</string>
+    <string name="search">검색</string>
+    <string name="no_results_found">검색 결과가 없습니다</string>
+    <string name="movie">영화</string>
+    <string name="tv_show">TV 프로그램</string>
+    <string name="person">인물</string>
+
+    <string name="no_network">인터넷 연결이 없습니다</string>
+    <string name="error_loading_movies">영화를 불러오는 중 오류가 발생했습니다</string>
+
+    <string name="press_again_to_exit">한 번 더 누르면 종료됩니다</string>
+
+    <string name="title_activity_movie_detail">영화 상세</string>
+    <string name="title_activity_cast_detail">인물 상세</string>
+    <string name="title_activity_view_all_movies">전체 영화</string>
+    <string name="title_activity_view_all_tvshows">전체 TV 프로그램</string>
+    <string name="title_activity_tvshow_detail">TV 프로그램 상세</string>
+    <string name="title_activity_about">정보</string>
+    <string name="title_activity_search">검색</string>
+    <string name="MOVIE_DB_API_KEY">957e5740ac3a4fbe6c5046369fa0f815</string>
+</resources>
+

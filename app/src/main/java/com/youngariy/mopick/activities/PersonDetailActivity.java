@@ -39,6 +39,7 @@ import com.youngariy.mopick.network.people.Person;
 import com.youngariy.mopick.network.tvshows.TVCastOfPerson;
 import com.youngariy.mopick.network.tvshows.TVCastsOfPersonResponse;
 import com.youngariy.mopick.utils.Constants;
+import com.youngariy.mopick.utils.LocaleHelper;
 import com.youngariy.mopick.utils.NetworkConnection;
 
 
@@ -52,8 +53,14 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import android.content.Context;
 
 public class PersonDetailActivity extends AppCompatActivity {
+
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(LocaleHelper.setLocale(base));
+    }
 
     private int mPersonId;
 
@@ -203,10 +210,11 @@ public class PersonDetailActivity extends AppCompatActivity {
 
     private void loadActivity() {
         ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
+        String language = LocaleHelper.getLanguageCode(this);
 
         mProgressBar.setVisibility(View.VISIBLE);
 
-        mPersonDetailsCall = apiService.getPersonDetails(mPersonId, getResources().getString(R.string.MOVIE_DB_API_KEY));
+        mPersonDetailsCall = apiService.getPersonDetails(mPersonId, getResources().getString(R.string.MOVIE_DB_API_KEY), language);
         mPersonDetailsCall.enqueue(new Callback<Person>() {
             @Override
             public void onResponse(Call<Person> call, final Response<Person> response) {
@@ -302,7 +310,8 @@ public class PersonDetailActivity extends AppCompatActivity {
 
     private void setMovieCast(Integer personId) {
         ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
-        mMovieCastsOfPersonsCall = apiService.getMovieCastsOfPerson(personId, getResources().getString(R.string.MOVIE_DB_API_KEY));
+        String language = LocaleHelper.getLanguageCode(this);
+        mMovieCastsOfPersonsCall = apiService.getMovieCastsOfPerson(personId, getResources().getString(R.string.MOVIE_DB_API_KEY), language);
         mMovieCastsOfPersonsCall.enqueue(new Callback<MovieCastsOfPersonResponse>() {
             @Override
             public void onResponse(Call<MovieCastsOfPersonResponse> call, Response<MovieCastsOfPersonResponse> response) {
@@ -334,7 +343,8 @@ public class PersonDetailActivity extends AppCompatActivity {
 
     private void setTVShowCast(Integer personId) {
         ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
-        mTVCastsOfPersonsCall = apiService.getTVCastsOfPerson(personId, getResources().getString(R.string.MOVIE_DB_API_KEY));
+        String language = LocaleHelper.getLanguageCode(this);
+        mTVCastsOfPersonsCall = apiService.getTVCastsOfPerson(personId, getResources().getString(R.string.MOVIE_DB_API_KEY), language);
         mTVCastsOfPersonsCall.enqueue(new Callback<TVCastsOfPersonResponse>() {
             @Override
             public void onResponse(Call<TVCastsOfPersonResponse> call, Response<TVCastsOfPersonResponse> response) {

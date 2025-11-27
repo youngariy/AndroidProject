@@ -1,9 +1,11 @@
 package com.youngariy.mopick.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.appcompat.widget.Toolbar;
@@ -16,8 +18,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.youngariy.mopick.R;
+import com.youngariy.mopick.utils.LocaleHelper;
 
 public class AboutActivity extends AppCompatActivity {
+
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(LocaleHelper.setLocale(base));
+    }
 
     private ImageView featureGraphicImageView;
 
@@ -58,7 +66,6 @@ public class AboutActivity extends AppCompatActivity {
     }
 
     private void loadActivity() {
-
         shareImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -122,6 +129,7 @@ public class AboutActivity extends AppCompatActivity {
         }
 
     }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
