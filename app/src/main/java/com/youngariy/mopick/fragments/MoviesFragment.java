@@ -5,10 +5,14 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.android.material.button.MaterialButton;
+import androidx.appcompat.widget.PopupMenu;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -22,6 +26,7 @@ import com.youngariy.mopick.R;
 import com.youngariy.mopick.activities.ViewAllMoviesActivity;
 import com.youngariy.mopick.adapters.MovieBriefsLargeAdapter;
 import com.youngariy.mopick.adapters.MovieBriefsSmallAdapter;
+import com.youngariy.mopick.network.movies.Genre;
 import com.youngariy.mopick.network.movies.MovieBrief;
 import com.youngariy.mopick.utils.Constants;
 import com.youngariy.mopick.utils.LocaleHelper;
@@ -55,6 +60,16 @@ public class MoviesFragment extends Fragment {
     private RecyclerView mTopRatedRecyclerView;
     private MovieBriefsSmallAdapter mTopRatedAdapter;
     private List<MovieBrief> mTopRatedMovies;
+
+    private MaterialButton mGenreButton;
+    private List<Genre> mGenres;
+    private Integer mSelectedGenreId = null;
+
+    // 원본 데이터 저장
+    private List<MovieBrief> mOriginalNowShowingMovies = new ArrayList<>();
+    private List<MovieBrief> mOriginalPopularMovies = new ArrayList<>();
+    private List<MovieBrief> mOriginalUpcomingMovies = new ArrayList<>();
+    private List<MovieBrief> mOriginalTopRatedMovies = new ArrayList<>();
 
     private MoviesViewModel mMoviesViewModel;
 
@@ -94,6 +109,8 @@ public class MoviesFragment extends Fragment {
         mUpcomingRecyclerView = view.findViewById(R.id.recycler_view_upcoming);
         new LinearSnapHelper().attachToRecyclerView(mUpcomingRecyclerView);
         mTopRatedRecyclerView = view.findViewById(R.id.recycler_view_top_rated);
+
+        mGenreButton = view.findViewById(R.id.button_genre_filter);
     }
 
     private void initAdapters() {
@@ -132,6 +149,9 @@ public class MoviesFragment extends Fragment {
         }
         Intent intent = new Intent(getContext(), ViewAllMoviesActivity.class);
         intent.putExtra(Constants.VIEW_ALL_MOVIES_TYPE, viewAllType);
+        if (mSelectedGenreId != null) {
+            intent.putExtra(Constants.SELECTED_GENRE_ID, mSelectedGenreId);
+        }
         startActivity(intent);
     }
 
@@ -139,50 +159,40 @@ public class MoviesFragment extends Fragment {
         mMoviesViewModel.getGenresList().observe(getViewLifecycleOwner(), genres -> {
             if (genres != null) {
                 MovieGenres.loadGenresList(genres);
+                mGenres = genres;
+                setupGenreButton();
             }
         });
 
         mMoviesViewModel.getNowShowingMovies().observe(getViewLifecycleOwner(), movies -> {
             if (movies != null && !movies.isEmpty()) {
-                mNowShowingMovies.clear();
-                mNowShowingMovies.addAll(movies);
-                mNowShowingAdapter.notifyDataSetChanged();
-                mNowShowingLayout.setVisibility(View.VISIBLE);
-                mNowShowingRecyclerView.setVisibility(View.VISIBLE);
-                mProgressBar.setVisibility(View.GONE);
+                mOriginalNowShowingMovies.clear();
+                mOriginalNowShowingMovies.addAll(movies);
+                applyGenreFilter();
             }
         });
 
         mMoviesViewModel.getPopularMovies().observe(getViewLifecycleOwner(), movies -> {
             if (movies != null && !movies.isEmpty()) {
-                mPopularMovies.clear();
-                mPopularMovies.addAll(movies);
-                mPopularAdapter.notifyDataSetChanged();
-                mPopularLayout.setVisibility(View.VISIBLE);
-                mPopularRecyclerView.setVisibility(View.VISIBLE);
-                mProgressBar.setVisibility(View.GONE);
+                mOriginalPopularMovies.clear();
+                mOriginalPopularMovies.addAll(movies);
+                applyGenreFilter();
             }
         });
 
         mMoviesViewModel.getUpcomingMovies().observe(getViewLifecycleOwner(), movies -> {
             if (movies != null && !movies.isEmpty()) {
-                mUpcomingMovies.clear();
-                mUpcomingMovies.addAll(movies);
-                mUpcomingAdapter.notifyDataSetChanged();
-                mUpcomingLayout.setVisibility(View.VISIBLE);
-                mUpcomingRecyclerView.setVisibility(View.VISIBLE);
-                mProgressBar.setVisibility(View.GONE);
+                mOriginalUpcomingMovies.clear();
+                mOriginalUpcomingMovies.addAll(movies);
+                applyGenreFilter();
             }
         });
 
         mMoviesViewModel.getTopRatedMovies().observe(getViewLifecycleOwner(), movies -> {
             if (movies != null && !movies.isEmpty()) {
-                mTopRatedMovies.clear();
-                mTopRatedMovies.addAll(movies);
-                mTopRatedAdapter.notifyDataSetChanged();
-                mTopRatedLayout.setVisibility(View.VISIBLE);
-                mTopRatedRecyclerView.setVisibility(View.VISIBLE);
-                mProgressBar.setVisibility(View.GONE);
+                mOriginalTopRatedMovies.clear();
+                mOriginalTopRatedMovies.addAll(movies);
+                applyGenreFilter();
             }
         });
 
@@ -192,6 +202,69 @@ public class MoviesFragment extends Fragment {
                 mProgressBar.setVisibility(View.GONE);
             }
         });
+    }
+
+    private void setupGenreButton() {
+        if (mGenres == null || mGenres.isEmpty()) return;
+
+        // 기본 선택 없음 (전체 표시)
+        mSelectedGenreId = null;
+        mGenreButton.setText("카테고리");
+
+        mGenreButton.setOnClickListener(v -> {
+            PopupMenu popupMenu = new PopupMenu(getContext(), mGenreButton);
+            
+            // 모든 장르 메뉴 아이템 추가
+            for (int i = 0; i < mGenres.size(); i++) {
+                Genre genre = mGenres.get(i);
+                popupMenu.getMenu().add(0, i, 0, genre.getGenreName());
+            }
+            
+            popupMenu.setOnMenuItemClickListener(item -> {
+                int position = item.getItemId();
+                mSelectedGenreId = mGenres.get(position).getId();
+                mGenreButton.setText(mGenres.get(position).getGenreName());
+                applyGenreFilter();
+                return true;
+            });
+            
+            popupMenu.show();
+        });
+    }
+
+    private void applyGenreFilter() {
+        filterMovies(mOriginalNowShowingMovies, mNowShowingMovies, mNowShowingAdapter, mNowShowingLayout, mNowShowingRecyclerView);
+        filterMovies(mOriginalPopularMovies, mPopularMovies, mPopularAdapter, mPopularLayout, mPopularRecyclerView);
+        filterMovies(mOriginalUpcomingMovies, mUpcomingMovies, mUpcomingAdapter, mUpcomingLayout, mUpcomingRecyclerView);
+        filterMovies(mOriginalTopRatedMovies, mTopRatedMovies, mTopRatedAdapter, mTopRatedLayout, mTopRatedRecyclerView);
+        mProgressBar.setVisibility(View.GONE);
+    }
+
+    private void filterMovies(List<MovieBrief> originalList, List<MovieBrief> filteredList, 
+                             RecyclerView.Adapter adapter, FrameLayout layout, RecyclerView recyclerView) {
+        filteredList.clear();
+        
+        if (mSelectedGenreId == null) {
+            // 전체 선택 - 원본 데이터 모두 표시
+            filteredList.addAll(originalList);
+        } else {
+            // 선택한 장르로 필터링
+            for (MovieBrief movie : originalList) {
+                if (movie.getGenreIds() != null && movie.getGenreIds().contains(mSelectedGenreId)) {
+                    filteredList.add(movie);
+                }
+            }
+        }
+
+        adapter.notifyDataSetChanged();
+        
+        if (!filteredList.isEmpty()) {
+            layout.setVisibility(View.VISIBLE);
+            recyclerView.setVisibility(View.VISIBLE);
+        } else {
+            layout.setVisibility(View.GONE);
+            recyclerView.setVisibility(View.GONE);
+        }
     }
 }
 

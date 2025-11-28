@@ -12,10 +12,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.android.material.button.MaterialButton;
+import androidx.appcompat.widget.PopupMenu;
 
 import com.youngariy.mopick.R;
 import com.youngariy.mopick.activities.ViewAllTVShowsActivity;
@@ -25,6 +29,7 @@ import com.youngariy.mopick.broadcastreceivers.ConnectivityBroadcastReceiver;
 import com.youngariy.mopick.network.ApiClient;
 import com.youngariy.mopick.network.ApiInterface;
 import com.youngariy.mopick.network.tvshows.AiringTodayTVShowsResponse;
+import com.youngariy.mopick.network.tvshows.Genre;
 import com.youngariy.mopick.network.tvshows.GenresList;
 import com.youngariy.mopick.network.tvshows.OnTheAirTVShowsResponse;
 import com.youngariy.mopick.network.tvshows.PopularTVShowsResponse;
@@ -88,6 +93,16 @@ public class TVShowsFragment extends Fragment {
     private Call<PopularTVShowsResponse> mPopularTVShowsCall;
     private Call<TopRatedTVShowsResponse> mTopRatedTVShowsCall;
 
+    private MaterialButton mGenreButton;
+    private List<Genre> mGenres;
+    private Integer mSelectedGenreId = null;
+
+    // 원본 데이터 저장
+    private List<TVShowBrief> mOriginalAiringTodayTVShows = new ArrayList<>();
+    private List<TVShowBrief> mOriginalOnTheAirTVShows = new ArrayList<>();
+    private List<TVShowBrief> mOriginalPopularTVShows = new ArrayList<>();
+    private List<TVShowBrief> mOriginalTopRatedTVShows = new ArrayList<>();
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -116,6 +131,8 @@ public class TVShowsFragment extends Fragment {
         mPopularRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_view_popular);
         (new LinearSnapHelper()).attachToRecyclerView(mPopularRecyclerView);
         mTopRatedRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_view_top_rated);
+
+        mGenreButton = view.findViewById(R.id.button_genre_filter);
 
         mAiringTodayTVShows = new ArrayList<>();
         mOnTheAirTVShows = new ArrayList<>();
@@ -148,6 +165,9 @@ public class TVShowsFragment extends Fragment {
                 }
                 Intent intent = new Intent(getContext(), ViewAllTVShowsActivity.class);
                 intent.putExtra(Constants.VIEW_ALL_TV_SHOWS_TYPE, Constants.AIRING_TODAY_TV_SHOWS_TYPE);
+                if (mSelectedGenreId != null) {
+                    intent.putExtra(Constants.SELECTED_GENRE_ID, mSelectedGenreId);
+                }
                 startActivity(intent);
             }
         });
@@ -160,6 +180,9 @@ public class TVShowsFragment extends Fragment {
                 }
                 Intent intent = new Intent(getContext(), ViewAllTVShowsActivity.class);
                 intent.putExtra(Constants.VIEW_ALL_TV_SHOWS_TYPE, Constants.ON_THE_AIR_TV_SHOWS_TYPE);
+                if (mSelectedGenreId != null) {
+                    intent.putExtra(Constants.SELECTED_GENRE_ID, mSelectedGenreId);
+                }
                 startActivity(intent);
             }
         });
@@ -172,6 +195,9 @@ public class TVShowsFragment extends Fragment {
                 }
                 Intent intent = new Intent(getContext(), ViewAllTVShowsActivity.class);
                 intent.putExtra(Constants.VIEW_ALL_TV_SHOWS_TYPE, Constants.POPULAR_TV_SHOWS_TYPE);
+                if (mSelectedGenreId != null) {
+                    intent.putExtra(Constants.SELECTED_GENRE_ID, mSelectedGenreId);
+                }
                 startActivity(intent);
             }
         });
@@ -184,6 +210,9 @@ public class TVShowsFragment extends Fragment {
                 }
                 Intent intent = new Intent(getContext(), ViewAllTVShowsActivity.class);
                 intent.putExtra(Constants.VIEW_ALL_TV_SHOWS_TYPE, Constants.TOP_RATED_TV_SHOWS_TYPE);
+                if (mSelectedGenreId != null) {
+                    intent.putExtra(Constants.SELECTED_GENRE_ID, mSelectedGenreId);
+                }
                 startActivity(intent);
             }
         });
@@ -279,6 +308,8 @@ public class TVShowsFragment extends Fragment {
                     if (response.body().getGenres() == null) return;
 
                     TVShowGenres.loadGenresList(response.body().getGenres());
+                    mGenres = response.body().getGenres();
+                    setupGenreButton();
                     loadAiringTodayTVShows();
                     loadOnTheAirTVShows();
                     loadPopularTVShows();
@@ -312,12 +343,13 @@ public class TVShowsFragment extends Fragment {
                 if (response.body().getResults() == null) return;
 
                 mAiringTodaySectionLoaded = true;
-                checkAllDataLoaded();
+                mOriginalAiringTodayTVShows.clear();
                 for (TVShowBrief TVShowBrief : response.body().getResults()) {
                     if (TVShowBrief != null && TVShowBrief.getBackdropPath() != null)
-                        mAiringTodayTVShows.add(TVShowBrief);
+                        mOriginalAiringTodayTVShows.add(TVShowBrief);
                 }
-                mAiringTodayAdapter.notifyDataSetChanged();
+                applyGenreFilter();
+                checkAllDataLoaded();
             }
 
             @Override
@@ -345,12 +377,13 @@ public class TVShowsFragment extends Fragment {
                 if (response.body().getResults() == null) return;
 
                 mOnTheAirSectionLoaded = true;
-                checkAllDataLoaded();
+                mOriginalOnTheAirTVShows.clear();
                 for (TVShowBrief TVShowBrief : response.body().getResults()) {
                     if (TVShowBrief != null && TVShowBrief.getPosterPath() != null)
-                        mOnTheAirTVShows.add(TVShowBrief);
+                        mOriginalOnTheAirTVShows.add(TVShowBrief);
                 }
-                mOnTheAirAdapter.notifyDataSetChanged();
+                applyGenreFilter();
+                checkAllDataLoaded();
             }
 
             @Override
@@ -378,12 +411,13 @@ public class TVShowsFragment extends Fragment {
                 if (response.body().getResults() == null) return;
 
                 mPopularSectionLoaded = true;
-                checkAllDataLoaded();
+                mOriginalPopularTVShows.clear();
                 for (TVShowBrief TVShowBrief : response.body().getResults()) {
                     if (TVShowBrief != null && TVShowBrief.getBackdropPath() != null)
-                        mPopularTVShows.add(TVShowBrief);
+                        mOriginalPopularTVShows.add(TVShowBrief);
                 }
-                mPopularAdapter.notifyDataSetChanged();
+                applyGenreFilter();
+                checkAllDataLoaded();
             }
 
             @Override
@@ -411,12 +445,13 @@ public class TVShowsFragment extends Fragment {
                 if (response.body().getResults() == null) return;
 
                 mTopRatedSectionLoaded = true;
-                checkAllDataLoaded();
+                mOriginalTopRatedTVShows.clear();
                 for (TVShowBrief TVShowBrief : response.body().getResults()) {
                     if (TVShowBrief != null && TVShowBrief.getPosterPath() != null)
-                        mTopRatedTVShows.add(TVShowBrief);
+                        mOriginalTopRatedTVShows.add(TVShowBrief);
                 }
-                mTopRatedAdapter.notifyDataSetChanged();
+                applyGenreFilter();
+                checkAllDataLoaded();
             }
 
             @Override
@@ -429,14 +464,68 @@ public class TVShowsFragment extends Fragment {
     private void checkAllDataLoaded() {
         if (mAiringTodaySectionLoaded && mOnTheAirSectionLoaded && mPopularSectionLoaded && mTopRatedSectionLoaded) {
             mProgressBar.setVisibility(View.GONE);
-            mAiringTodayLayout.setVisibility(View.VISIBLE);
-            mAiringTodayRecyclerView.setVisibility(View.VISIBLE);
-            mOnTheAirLayout.setVisibility(View.VISIBLE);
-            mOnTheAirRecyclerView.setVisibility(View.VISIBLE);
-            mPopularLayout.setVisibility(View.VISIBLE);
-            mPopularRecyclerView.setVisibility(View.VISIBLE);
-            mTopRatedLayout.setVisibility(View.VISIBLE);
-            mTopRatedRecyclerView.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void setupGenreButton() {
+        if (mGenres == null || mGenres.isEmpty()) return;
+
+        // 기본 선택 없음 (전체 표시)
+        mSelectedGenreId = null;
+        mGenreButton.setText("카테고리");
+
+        mGenreButton.setOnClickListener(v -> {
+            PopupMenu popupMenu = new PopupMenu(getContext(), mGenreButton);
+            
+            // 모든 장르 메뉴 아이템 추가
+            for (int i = 0; i < mGenres.size(); i++) {
+                Genre genre = mGenres.get(i);
+                popupMenu.getMenu().add(0, i, 0, genre.getGenreName());
+            }
+            
+            popupMenu.setOnMenuItemClickListener(item -> {
+                int position = item.getItemId();
+                mSelectedGenreId = mGenres.get(position).getId();
+                mGenreButton.setText(mGenres.get(position).getGenreName());
+                applyGenreFilter();
+                return true;
+            });
+            
+            popupMenu.show();
+        });
+    }
+
+    private void applyGenreFilter() {
+        filterTVShows(mOriginalAiringTodayTVShows, mAiringTodayTVShows, mAiringTodayAdapter, mAiringTodayLayout, mAiringTodayRecyclerView);
+        filterTVShows(mOriginalOnTheAirTVShows, mOnTheAirTVShows, mOnTheAirAdapter, mOnTheAirLayout, mOnTheAirRecyclerView);
+        filterTVShows(mOriginalPopularTVShows, mPopularTVShows, mPopularAdapter, mPopularLayout, mPopularRecyclerView);
+        filterTVShows(mOriginalTopRatedTVShows, mTopRatedTVShows, mTopRatedAdapter, mTopRatedLayout, mTopRatedRecyclerView);
+    }
+
+    private void filterTVShows(List<TVShowBrief> originalList, List<TVShowBrief> filteredList,
+                               RecyclerView.Adapter adapter, FrameLayout layout, RecyclerView recyclerView) {
+        filteredList.clear();
+
+        if (mSelectedGenreId == null) {
+            // 전체 선택 - 원본 데이터 모두 표시
+            filteredList.addAll(originalList);
+        } else {
+            // 선택한 장르로 필터링
+            for (TVShowBrief tvShow : originalList) {
+                if (tvShow.getGenreIds() != null && tvShow.getGenreIds().contains(mSelectedGenreId)) {
+                    filteredList.add(tvShow);
+                }
+            }
+        }
+
+        adapter.notifyDataSetChanged();
+
+        if (!filteredList.isEmpty()) {
+            layout.setVisibility(View.VISIBLE);
+            recyclerView.setVisibility(View.VISIBLE);
+        } else {
+            layout.setVisibility(View.GONE);
+            recyclerView.setVisibility(View.GONE);
         }
     }
 }

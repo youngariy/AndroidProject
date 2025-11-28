@@ -87,7 +87,31 @@ public class MainActivity extends AppCompatActivity {
 
         mNavigationView.setNavigationItemSelectedListener(item -> {
             int id = item.getItemId();
-            if (id == R.id.nav_settings) {
+            if (id == R.id.nav_movies) {
+                setTitle(R.string.movies);
+                applyMoviesChrome();
+                setFragment(new MoviesFragment());
+                mDrawerLayout.closeDrawers();
+                // 하단 바도 동기화
+                mBottomNavigation.setSelectedItemId(R.id.nav_movies);
+                return true;
+            } else if (id == R.id.nav_tv_shows) {
+                setTitle(R.string.tv_shows);
+                applyMoviesChrome();
+                setFragment(new TVShowsFragment());
+                mDrawerLayout.closeDrawers();
+                // 하단 바도 동기화
+                mBottomNavigation.setSelectedItemId(R.id.nav_tv_shows);
+                return true;
+            } else if (id == R.id.nav_favorites) {
+                setTitle(R.string.favorites);
+                applyMoviesChrome();
+                setFragment(new FavouritesFragment());
+                mDrawerLayout.closeDrawers();
+                // 하단 바도 동기화
+                mBottomNavigation.setSelectedItemId(R.id.nav_favorites);
+                return true;
+            } else if (id == R.id.nav_settings) {
                 Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
                 startActivity(intent);
                 mDrawerLayout.closeDrawers();
