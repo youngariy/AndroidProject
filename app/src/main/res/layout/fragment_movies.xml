@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorMovieDetailBackground">
@@ -14,7 +15,40 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
+            android:paddingTop="?attr/actionBarSize"
             android:paddingBottom="20dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingLeft="12dp"
+                android:paddingRight="12dp"
+                android:paddingTop="12dp"
+                android:paddingBottom="8dp"
+                android:gravity="center_vertical">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/button_genre_filter"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="카테고리"
+                    android:textColor="@color/colorMovieDetailTextPrimary"
+                    android:textSize="14sp"
+                    android:minHeight="36dp"
+                    android:paddingLeft="16dp"
+                    android:paddingRight="16dp"
+                    android:insetLeft="0dp"
+                    android:insetRight="0dp"
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp"
+                    app:cornerRadius="18dp"
+                    app:strokeColor="@color/colorMovieDetailTextPrimary"
+                    app:strokeWidth="1dp"
+                    app:backgroundTint="@android:color/transparent" />
+
+            </LinearLayout>
 
             <FrameLayout
                 android:id="@+id/layout_now_showing"
@@ -23,7 +57,6 @@
                 android:layout_marginLeft="12dp"
                 android:layout_marginTop="12dp"
                 android:layout_marginRight="12dp"
-                android:background="@drawable/bg_section_header_movie_dark"
                 android:visibility="gone">
 
                 <TextView
@@ -62,7 +95,6 @@
                 android:layout_marginLeft="12dp"
                 android:layout_marginTop="12dp"
                 android:layout_marginRight="12dp"
-                android:background="@drawable/bg_section_header_movie_dark"
                 android:visibility="gone">
 
                 <TextView
@@ -101,7 +133,6 @@
                 android:layout_marginLeft="12dp"
                 android:layout_marginTop="12dp"
                 android:layout_marginRight="12dp"
-                android:background="@drawable/bg_section_header_movie_dark"
                 android:visibility="gone">
 
                 <TextView
@@ -140,7 +171,6 @@
                 android:layout_marginLeft="12dp"
                 android:layout_marginTop="12dp"
                 android:layout_marginRight="12dp"
-                android:background="@drawable/bg_section_header_movie_dark"
                 android:visibility="gone">
 
                 <TextView

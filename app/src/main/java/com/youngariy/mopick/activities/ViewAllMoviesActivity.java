@@ -3,11 +3,21 @@ package com.youngariy.mopick.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+import androidx.core.view.WindowCompat;
+import androidx.core.view.WindowInsetsControllerCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.appcompat.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.widget.ArrayAdapter;
 import android.widget.Toast;
+
+import com.google.android.material.button.MaterialButton;
+import androidx.appcompat.widget.PopupMenu;
 
 import androidx.annotation.NonNull;
 
@@ -15,6 +25,8 @@ import com.youngariy.mopick.R;
 import com.youngariy.mopick.adapters.MovieBriefsSmallAdapter;
 import com.youngariy.mopick.network.ApiClient;
 import com.youngariy.mopick.network.ApiInterface;
+import com.youngariy.mopick.network.movies.Genre;
+import com.youngariy.mopick.network.movies.GenresList;
 import com.youngariy.mopick.network.movies.MovieBrief;
 import com.youngariy.mopick.network.movies.NowShowingMoviesResponse;
 import com.youngariy.mopick.network.movies.PopularMoviesResponse;
@@ -22,6 +34,7 @@ import com.youngariy.mopick.network.movies.TopRatedMoviesResponse;
 import com.youngariy.mopick.network.movies.UpcomingMoviesResponse;
 import com.youngariy.mopick.utils.Constants;
 import com.youngariy.mopick.utils.LocaleHelper;
+import com.youngariy.mopick.utils.MovieGenres;
 import com.youngariy.mopick.utils.NetworkConnection;
 
 import java.util.ArrayList;
@@ -44,6 +57,12 @@ public class ViewAllMoviesActivity extends AppCompatActivity {
     private MovieBriefsSmallAdapter mMoviesAdapter;
 
     private String mMovieType; // Changed to String
+    private Integer mSelectedGenreId = null;
+    private MaterialButton mGenreButton;
+    private List<Genre> mGenres;
+
+    // 원본 데이터 저장
+    private List<MovieBrief> mOriginalMovies = new ArrayList<>();
 
     private boolean pagesOver = false;
     private int presentPage = 1;
@@ -51,6 +70,7 @@ public class ViewAllMoviesActivity extends AppCompatActivity {
     private int previousTotal = 0;
     private int visibleThreshold = 5;
 
+    private Call<GenresList> mGenresListCall;
     private Call<NowShowingMoviesResponse> mNowShowingMoviesCall;
     private Call<PopularMoviesResponse> mPopularMoviesCall;
     private Call<UpcomingMoviesResponse> mUpcomingMoviesCall;
@@ -68,6 +88,11 @@ public class ViewAllMoviesActivity extends AppCompatActivity {
 
         Intent receivedIntent = getIntent();
         mMovieType = receivedIntent.getStringExtra(Constants.VIEW_ALL_MOVIES_TYPE); // Changed to getStringExtra
+        mSelectedGenreId = receivedIntent.hasExtra(Constants.SELECTED_GENRE_ID) ? 
+            receivedIntent.getIntExtra(Constants.SELECTED_GENRE_ID, -1) : null;
+        if (mSelectedGenreId != null && mSelectedGenreId == -1) {
+            mSelectedGenreId = null;
+        }
 
         if (mMovieType == null) {
             finish();
@@ -86,11 +111,23 @@ public class ViewAllMoviesActivity extends AppCompatActivity {
         }
 
         mRecyclerView = findViewById(R.id.recycler_view_view_all);
+        mGenreButton = findViewById(R.id.button_genre_filter);
         mMovies = new ArrayList<>();
         mMoviesAdapter = new MovieBriefsSmallAdapter(this, mMovies);
         mRecyclerView.setAdapter(mMoviesAdapter);
         final GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2);
         mRecyclerView.setLayoutManager(gridLayoutManager);
+
+        // 상단바 색상 설정
+        Window window = getWindow();
+        window.setStatusBarColor(ContextCompat.getColor(this, R.color.colorMovieDetailBackground));
+        WindowInsetsControllerCompat insetsController = WindowCompat.getInsetsController(window, window.getDecorView());
+        if (insetsController != null) {
+            insetsController.setAppearanceLightStatusBars(false);
+        }
+
+        // 장르 목록 로드
+        loadGenresList();
 
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -132,10 +169,88 @@ public class ViewAllMoviesActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        if (mGenresListCall != null) mGenresListCall.cancel();
         if (mNowShowingMoviesCall != null) mNowShowingMoviesCall.cancel();
         if (mPopularMoviesCall != null) mPopularMoviesCall.cancel();
         if (mUpcomingMoviesCall != null) mUpcomingMoviesCall.cancel();
         if (mTopRatedMoviesCall != null) mTopRatedMoviesCall.cancel();
+    }
+
+    private void loadGenresList() {
+        ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
+        String language = LocaleHelper.getLanguageCode(this);
+        mGenresListCall = apiService.getMovieGenresList(getResources().getString(R.string.MOVIE_DB_API_KEY), language);
+        mGenresListCall.enqueue(new Callback<GenresList>() {
+            @Override
+            public void onResponse(@NonNull Call<GenresList> call, @NonNull Response<GenresList> response) {
+                if (response.isSuccessful() && response.body() != null && response.body().getGenres() != null) {
+                    MovieGenres.loadGenresList(response.body().getGenres());
+                    mGenres = response.body().getGenres();
+                    loadGenresForButton();
+                    // 장르 필터가 이미 설정되어 있으면 즉시 필터링 적용
+                    if (mSelectedGenreId != null) {
+                        applyGenreFilter();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<GenresList> call, @NonNull Throwable t) {
+                // Handle failure
+            }
+        });
+    }
+
+    private void loadGenresForButton() {
+        if (mGenres == null || mGenres.isEmpty()) {
+            return;
+        }
+
+        // 전달받은 장르 ID가 있으면 해당 장르 이름 표시, 없으면 "카테고리" 표시
+        if (mSelectedGenreId != null) {
+            for (Genre genre : mGenres) {
+                if (genre.getId().equals(mSelectedGenreId)) {
+                    mGenreButton.setText(genre.getGenreName());
+                    break;
+                }
+            }
+        } else {
+            mGenreButton.setText("카테고리");
+        }
+
+        mGenreButton.setOnClickListener(v -> {
+            PopupMenu popupMenu = new PopupMenu(this, mGenreButton);
+            
+            // 모든 장르 메뉴 아이템 추가
+            for (int i = 0; i < mGenres.size(); i++) {
+                Genre genre = mGenres.get(i);
+                popupMenu.getMenu().add(0, i, 0, genre.getGenreName());
+            }
+            
+            popupMenu.setOnMenuItemClickListener(item -> {
+                int position = item.getItemId();
+                mSelectedGenreId = mGenres.get(position).getId();
+                mGenreButton.setText(mGenres.get(position).getGenreName());
+                applyGenreFilter();
+                return true;
+            });
+            
+            popupMenu.show();
+        });
+    }
+
+    private void applyGenreFilter() {
+        mMovies.clear();
+        if (mSelectedGenreId == null) {
+            mMovies.addAll(mOriginalMovies);
+        } else {
+            for (MovieBrief movie : mOriginalMovies) {
+                if (movie.getGenreIds() != null && movie.getGenreIds().contains(mSelectedGenreId)) {
+                    mMovies.add(movie);
+                }
+            }
+        }
+        mMoviesAdapter.notifyDataSetChanged();
     }
 
     private void loadMovies(String movieType) { // Changed parameter to String
@@ -160,9 +275,9 @@ public class ViewAllMoviesActivity extends AppCompatActivity {
 
                     for (MovieBrief movieBrief : response.body().getResults()) {
                         if (movieBrief != null && movieBrief.getTitle() != null && movieBrief.getPosterPath() != null)
-                            mMovies.add(movieBrief);
+                            mOriginalMovies.add(movieBrief);
                     }
-                    mMoviesAdapter.notifyDataSetChanged();
+                    applyGenreFilter();
                     if (response.body().getPage() == response.body().getTotalPages()) pagesOver = true;
                     else presentPage++;
                 }
@@ -186,9 +301,9 @@ public class ViewAllMoviesActivity extends AppCompatActivity {
 
                     for (MovieBrief movieBrief : response.body().getResults()) {
                         if (movieBrief != null && movieBrief.getTitle() != null && movieBrief.getPosterPath() != null)
-                            mMovies.add(movieBrief);
+                            mOriginalMovies.add(movieBrief);
                     }
-                    mMoviesAdapter.notifyDataSetChanged();
+                    applyGenreFilter();
                     if (response.body().getPage() == response.body().getTotalPages()) pagesOver = true;
                     else presentPage++;
                 }
@@ -212,9 +327,9 @@ public class ViewAllMoviesActivity extends AppCompatActivity {
 
                     for (MovieBrief movieBrief : response.body().getResults()) {
                         if (movieBrief != null && movieBrief.getTitle() != null && movieBrief.getPosterPath() != null)
-                            mMovies.add(movieBrief);
+                            mOriginalMovies.add(movieBrief);
                     }
-                    mMoviesAdapter.notifyDataSetChanged();
+                    applyGenreFilter();
                     if (response.body().getPage() == response.body().getTotalPages()) pagesOver = true;
                     else presentPage++;
                 }
@@ -238,9 +353,9 @@ public class ViewAllMoviesActivity extends AppCompatActivity {
 
                     for (MovieBrief movieBrief : response.body().getResults()) {
                         if (movieBrief != null && movieBrief.getTitle() != null && movieBrief.getPosterPath() != null)
-                            mMovies.add(movieBrief);
+                            mOriginalMovies.add(movieBrief);
                     }
-                    mMoviesAdapter.notifyDataSetChanged();
+                    applyGenreFilter();
                     if (response.body().getPage() == response.body().getTotalPages()) pagesOver = true;
                     else presentPage++;
                 }

@@ -21,6 +21,7 @@ public class Constants {
     public static final String TOP_RATED_TV_SHOWS_TYPE = "top_rated_tv_shows";
     public static final String PERSON_ID = "person_id";
     public static final String QUERY = "query";
+    public static final String SELECTED_GENRE_ID = "selected_genre_id";
     public static final String RATING_SYMBOL = "\u2605";
     public static final String IMAGE_LOADING_BASE_URL_1280 = "https://image.tmdb.org/t/p/w1280/";
     public static final String IMAGE_LOADING_BASE_URL_342 = "https://image.tmdb.org/t/p/w342/";
